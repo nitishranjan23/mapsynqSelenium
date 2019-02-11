@@ -1,6 +1,9 @@
+#Author: Nitish
+#Date: 10th Feb 2019
+
 Feature: To test basic features of mapsynq home page
 
-  Background: 
+  Background: Page Launch
     Given open the mapsync page with given URL
 		And verify mapsync page is loaded properly
 		
@@ -29,8 +32,8 @@ Feature: To test basic features of mapsynq home page
   Scenario: Live Tab
     Verifications of Live Tab and its sub-tabs
 
-    Then click on "Live" tab
-    And verify following sub tabs are present
+    When user clicks on "Live" tab
+    Then verify following sub tabs are present
       | Incidents |
       | Cameras   |
       | Tolls     |
@@ -39,14 +42,14 @@ Feature: To test basic features of mapsynq home page
   Scenario: Personal Tab
     Before sign in
 
-    Then click on "Personal" tab
-    And verify following buttons are present
+    When user clicks on "Personal" tab
+    Then verify following buttons are present
       | Sign in  |
       | Register |
 
   Scenario: Directions Tab
-    Then click on "Directions" tab
-    And verify To/Origin and From/Destination textboxes are present
+    When user clicks on "Directions" tab
+    Then verify To/Origin and From/Destination textboxes are present
     And verify following checkboxes are present
       | Traffic aware |
       | Toll Aware    |

@@ -48,7 +48,34 @@ public class MapsynqHome {
 	}
 	
 	/**
-	 * This method will get a particular tab based on tab name passed
+	 * This method will get a particular sub-tab based on its name passed in parameter
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param subTabName Name of sub-tab to select
+	 * @return It will return particular sub-tab as {@link WebElement}
+	 * 
+	 * */
+	public WebElement getLeftTabsSubTabsByName(WebDriver driver, String subTabName) {
+		return driver.findElement(By.xpath("//span[.='"+subTabName+"']/parent::label"));
+	}
+	
+	@FindBy(how = How.CSS, using = "ul.incident div.item_content")
+	public List<WebElement> incidentsListIncidentsSubTabLiveTab;
+	
+	/**
+	 * This method will get a particular Text box based on Placeholder text passed
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param tbPlaceholder Placeholder text in the text box to select 
+	 * @return It will return particular Text box as {@link WebElement}
+	 * 
+	 * */
+	public WebElement getTextboxWithPlaceholderText(WebDriver driver, String tbPlaceholder) {
+		return driver.findElement(By.cssSelector("input[placeholder='"+tbPlaceholder+"']"));
+	}
+	
+	/**
+	 * This method will get a particular button based on button name passed
 	 * @author Nitish
 	 * @param driver {@link WebDriver} instance
 	 * @param buttonName Name of button to select
@@ -80,7 +107,21 @@ public class MapsynqHome {
 		return driver.findElement(By.xpath("//span[text()='"+checkboxName+"']/preceding-sibling::input"));
 	}
 	
+	
+	/**
+	 * This method will get a particular Dropdown based on name passed
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param dropdownName Name of Dropdown to select
+	 * @return It will return particular Dropdown as {@link WebElement}
+	 * 
+	 * */
+	public WebElement getDropdownWithName(WebDriver driver, String dropdownName) {
+		return driver.findElement(By.xpath("//span[contains(normalize-space(), '"+dropdownName+"')]/select"));
+	}
+	
+	
 	//div[@id='popup']/preceding-sibling::div[1]//*[local-name()='image']
 			
-			
+	
 }

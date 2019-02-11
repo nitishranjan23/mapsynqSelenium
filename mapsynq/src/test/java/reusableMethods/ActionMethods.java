@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -33,10 +34,43 @@ public class ActionMethods {
 		}
 	}
 
+	
+	/**
+	 * This method is used for synchronization.
+	 * It will wait for the {@link WebElement} to be present on the page
+	 * By default I have put the maximum waiting time to be 30sec. 
+	 * If the element will be available before the given time it will continue the execution
+	 * without waiting for max time provided.
+	 * It will ignore the {@link StaleElementReferenceException} and {@link NoSuchElementException} 
+	 * if occured in between the availablity of {@link WebElement} and maximum time interval provided.
+	 * 
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param element {@link WebElement} to wait for
+	 * */
 	public void sync(WebDriver driver, WebElement element) {
 		WebDriverWait wait = new WebDriverWait(driver, 30);
 		wait.ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class)
 				.until(ExpectedConditions.visibilityOf(element));
+	}
+	
+	/**
+	 * This method is used for synchronization.
+	 * It will wait for the {@link WebElement} to be clickable.
+	 * By default I have put the maximum waiting time to be 30sec. 
+	 * If the element will be available before the given time it will continue the execution
+	 * without waiting for max time provided.
+	 * It will ignore the {@link StaleElementReferenceException} and {@link NoSuchElementException} 
+	 * if occured in between the clickability of {@link WebElement} and maximum time interval provided.
+	 * 
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param element {@link WebElement} to wait for
+	 * */
+	public void syncClickable(WebDriver driver, WebElement element) {
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		wait.ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class).ignoring(ElementNotInteractableException.class)
+				.until(ExpectedConditions.elementToBeClickable(element));
 	}
 	
 	/**
