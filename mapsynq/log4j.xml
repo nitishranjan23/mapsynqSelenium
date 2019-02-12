@@ -15,6 +15,12 @@
     </layout>
   </appender>
  
+ <appender name="HTML" class="org.apache.log4j.FileAppender">
+    <param name="File" value="logs/mapsynq.html"/>
+    <layout class="org.apache.log4j.HTMLLayout">
+    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+    </layout>
+  </appender>
   <root>
     <priority value ="debug"></priority>
     <appender-ref ref="console"></appender-ref>

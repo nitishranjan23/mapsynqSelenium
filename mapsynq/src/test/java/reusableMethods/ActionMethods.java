@@ -6,11 +6,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ActionMethods {
@@ -93,5 +95,33 @@ public class ActionMethods {
 			Log.error(e);
 			throw e;
 		}
+	}
+	
+	/**
+	 * This method will get all options/values present in a dropdown.
+	 * Dropdown should be of {@link Select} type
+	 * 
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param dropdownElement {@link WebElement} of dropdown
+	 * @return All available options in the form of {@link List} of {@link WebElement}
+	 * */
+	public List<WebElement> getOptionsFromDropdown(WebDriver driver, WebElement dropdownElement){
+		Select select = new Select(dropdownElement);
+		List<WebElement> availableOptions = select.getOptions();
+		return availableOptions;
+	}
+	
+	/**
+	 * This method will wait for alert to appear.
+	 * By default I have given maximum waiting time of 10sec waiting time. 
+	 * If alert appears before that, the execution will continue without waiting for maximum time.
+	 * 
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * */
+	public void waitForAlertToAppear(WebDriver driver) {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.ignoring(NoAlertPresentException.class).until(ExpectedConditions.alertIsPresent());
 	}
 }

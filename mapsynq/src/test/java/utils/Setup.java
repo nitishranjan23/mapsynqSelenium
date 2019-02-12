@@ -29,7 +29,7 @@ public class Setup {
 	public static MapsynqHome homePage;
 	public static Properties properties;
 	static PropertiesFileReader fileReader = new PropertiesFileReader();
-	Actions action;
+	public static Actions action;
 	static Scenario scenario;
 	/**
 	 * Initialization method:

@@ -59,7 +59,8 @@ public class MapsynqHome {
 		return driver.findElement(By.xpath("//span[.='"+subTabName+"']/parent::label"));
 	}
 	
-	@FindBy(how = How.CSS, using = "ul.incident div.item_content")
+	//@FindBy(how = How.CSS, using = "ul.incident div.item_content") //This locator is not working for hidden element
+	@FindBy(how = How.XPATH, using = "//div[contains(@id, 'BrowseIncident')]/div[1]//li[not(contains(@style,'display: none;'))]//div[@class = 'item_content']")
 	public List<WebElement> incidentsListIncidentsSubTabLiveTab;
 	
 	/**
@@ -73,6 +74,26 @@ public class MapsynqHome {
 	public WebElement getTextboxWithPlaceholderText(WebDriver driver, String tbPlaceholder) {
 		return driver.findElement(By.cssSelector("input[placeholder='"+tbPlaceholder+"']"));
 	}
+	
+	/**
+	 * This method will get a particular Dropdown based on name passed
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param dropdownName Name of Dropdown to select
+	 * @return It will return particular Dropdown as {@link WebElement}
+	 * 
+	 * */
+	public WebElement getDropdownWithName(WebDriver driver, String dropdownName) {
+		return driver.findElement(By.xpath("//span[contains(normalize-space(), '"+dropdownName+"')]/select"));
+	}
+	
+	//@FindBy(how = How.CSS, using = "ul[id *='camera_location'] a") //This locator is not working for hidden element
+	@FindBy(how = How.XPATH, using = "//div[contains(@id, 'BrowseCamera')]/div[1]//div[@class = 'camera_list' and not(contains(@style,'display: none;'))]")
+	public List<WebElement> cameraListCameraSubTabLiveTab;
+	
+	//@FindBy(how = How.CSS, using = "ul[id *='erp_location'] a") //This locator is not working for hidden element
+	@FindBy(how = How.XPATH, using = "//div[contains(@id, 'ERP')]/div[1]//div[@class = 'erp_list' and not(contains(@style,'display: none;'))]")
+	public List<WebElement> tollListTollSubTabLiveTab;
 	
 	/**
 	 * This method will get a particular button based on button name passed
@@ -95,6 +116,9 @@ public class MapsynqHome {
 	@FindBy(how = How.CSS, using = "input[type = 'button'][title ='Swap origin/destination']")
 	public WebElement swapOriginDestinationBTN; //Curved Arrow button to swap origin and destination 
 	
+	@FindBy(how = How.XPATH, using = "//div[@class = 'autocomplete' and not(contains(@style, 'display: none;'))]")
+	public WebElement autocompleteSuggestions;
+	
 	/**
 	 * This method will get a particular checkbox based on name passed
 	 * @author Nitish
@@ -103,22 +127,12 @@ public class MapsynqHome {
 	 * @return It will return particular checkbox as {@link WebElement}
 	 * 
 	 * */
-	public WebElement getCheckboxName(WebDriver driver, String checkboxName) {
-		return driver.findElement(By.xpath("//span[text()='"+checkboxName+"']/preceding-sibling::input"));
+	public WebElement getCheckboxByName(WebDriver driver, String checkboxName) {
+		return driver.findElement(By.xpath("//span[contains(normalize-space(),'"+checkboxName+"')]/preceding-sibling::input"));
 	}
 	
 	
-	/**
-	 * This method will get a particular Dropdown based on name passed
-	 * @author Nitish
-	 * @param driver {@link WebDriver} instance
-	 * @param dropdownName Name of Dropdown to select
-	 * @return It will return particular Dropdown as {@link WebElement}
-	 * 
-	 * */
-	public WebElement getDropdownWithName(WebDriver driver, String dropdownName) {
-		return driver.findElement(By.xpath("//span[contains(normalize-space(), '"+dropdownName+"')]/select"));
-	}
+	
 	
 	
 	//div[@id='popup']/preceding-sibling::div[1]//*[local-name()='image']
