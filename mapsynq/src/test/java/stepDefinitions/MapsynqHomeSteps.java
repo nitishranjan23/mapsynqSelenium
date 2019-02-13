@@ -28,6 +28,13 @@ import pageObject.MapsynqHome;
 import reusableMethods.ActionMethods;
 import utils.Setup;
 
+/**
+ * This Class is used for defining steps related to validations of mapsynq home page.
+ * It mainly contains step definition of HomePage.feature file.
+ * 
+ * @author Nitish
+ * 
+ * */
 public class MapsynqHomeSteps {
 
 	static Logger Log = Logger.getLogger(MapsynqHomeSteps.class);
@@ -115,9 +122,9 @@ public class MapsynqHomeSteps {
 		try {
 			List<String> actualList = action.convertWebElementListToStringList(homePage.topRightLinks);
 			Log.info("Actual links: " + actualList);
-			// Here I am using SoftAssert because it will check all the links and do not
-			// stops the execution if any link is not present
-			// It will show the error (if any) only after checking all the conditions
+			/*Here I am using SoftAssert because it will check all the links and do not
+			 stops the execution if any link is not present
+			 It will show the error (if any) only after checking all the conditions*/
 			SoftAssert sf = new SoftAssert();
 			for (String link : expectedLinks) {
 				boolean present = actualList.contains(link);
@@ -174,9 +181,11 @@ public class MapsynqHomeSteps {
 	@Then("^verify following sub tabs are present$")
 	public void verify_following_sub_tabs_are_present(List<String> expectedSubTabNames) throws Throwable {
 		try {
-			// Here I am using SoftAssert because it will check all the sub-tabs and do not
-			// stops the execution if any sub-tab is not present
-			// It will show the error (if any) only after checking all the conditions
+			/*
+			 * Here I am using SoftAssert because it will check all the sub-tabs and do not
+			 * stops the execution if any sub-tab is not present It will show the error (if
+			 * any) only after checking all the conditions
+			 */
 			SoftAssert sf = new SoftAssert();
 			for (String subTabName : expectedSubTabNames) {
 				boolean present = homePage.getLeftTabsSubTabsByName(driver, subTabName).isDisplayed();

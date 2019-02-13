@@ -11,15 +11,15 @@ Feature: To test Google Map related features of mapsynq home page
 
   Scenario: Top pannel buttons on the map
     When Google map is loaded
-    Then verify following pannel buttons are present on top of the map
-      | Traffic   |
-      | Incidents |
-      | Parking   |
-      | Cameras   |
-      | Tolls     |
+    Then verify panel buttons are present on top of the map to show following
+      | Traffic Speed    |
+      | Incidents/Alerts |
+      | Parking          |
+      | Camera           |
+      | Toll             |
     Then click on "Incidents" button to make it active
     And verify incidents are marked on the map
-    Then click on "Traffic" button to make it active
+    Then click on "Traffic Speed" button to make it active
     And verify Live Traffic information is displayed on the map
 
   Scenario: Zoom bar and direction slider buttons
@@ -33,6 +33,7 @@ Feature: To test Google Map related features of mapsynq home page
       | right |
     Then verify "zoomin" and "zoomout" buttons are present on the map
     And verify zoombar is present on the map
+
 
   Scenario: Functioning of Direction buttons
     When Google map is loaded

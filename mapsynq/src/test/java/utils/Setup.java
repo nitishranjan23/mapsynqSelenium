@@ -17,6 +17,7 @@ import org.openqa.selenium.support.PageFactory;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import pageObject.GoogleMap;
 import pageObject.MapsynqHome;
 import reusableMethods.PropertiesFileReader;
 
@@ -27,6 +28,7 @@ public class Setup {
 	}
 	public static WebDriver driver;
 	public static MapsynqHome homePage;
+	public static GoogleMap googleMapPage;
 	public static Properties properties;
 	static PropertiesFileReader fileReader = new PropertiesFileReader();
 	public static Actions action;
@@ -90,6 +92,7 @@ public class Setup {
 		}
 		driver.manage().window().maximize(); //Maximizing the browser window
 		homePage = PageFactory.initElements(driver, MapsynqHome.class);
+		googleMapPage = PageFactory.initElements(driver, GoogleMap.class);
 		action = new Actions(driver);
 	}
 
