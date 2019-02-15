@@ -54,8 +54,6 @@ Feature: To test Google Map related features of mapsynq home page
     And verify "Incidents" pannel is active on the top of the map
     Then click on the close button in the popup
     And verify information popup is closed
-    Then click on any icon incident icon on map
-    And verify information popup is displayed
 
   Scenario: Display of Cameras on Google map
     When user clicks on "Live" tab
@@ -65,16 +63,12 @@ Feature: To test Google Map related features of mapsynq home page
     And verify "Cameras" pannel is active on the top of the map
     Then click on the close button in the popup
     And verify information popup is closed
-    Then click on any camera icon on map
-    And verify information popup is displayed
     
     Scenario: Display of Tolls on Google map
     When user clicks on "Live" tab
     And click on "Tolls" sub-tab
     Then verify Tolls list is displayed
     Then verify clicking on any Tolls displays that Tolls on the map
-    And verify "Tolls" pannel is active on the top of the map
+    And verify "Toll" pannel is active on the top of the map
     Then click on the close button in the popup
     And verify information popup is closed
-    Then click on any Tolls icon on map
-    And verify information popup is displayed

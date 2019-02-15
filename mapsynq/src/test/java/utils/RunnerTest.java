@@ -8,9 +8,9 @@ import org.junit.runner.RunWith;
 
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "src/test/features", 
+@CucumberOptions(features = {"src/test/resources"}, 
 					glue = "src/test/java/stepDefinitions",
-					format = { "pretty", "json:target/cucumber.json", "html:target/site/cucumber-pretty"}
+					plugin = { "pretty", "json:target/cucumber.json", "html:target/cucumber-html-reports"}
 					//,tags = { "~@ignore" }
 					)
 public class RunnerTest {

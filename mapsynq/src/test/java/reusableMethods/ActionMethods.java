@@ -3,8 +3,6 @@ package reusableMethods;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
@@ -19,7 +17,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ActionMethods {
 
-	static Logger Log = Logger.getLogger(ActionMethods.class);
+	static Logger LOG = Logger.getLogger(ActionMethods.class);
 
 	/**
 	 * This method will check the ready state of a page to find whether the page is
@@ -55,6 +53,46 @@ public class ActionMethods {
 		WebDriverWait wait = new WebDriverWait(driver, 30);
 		wait.ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class)
 				.until(ExpectedConditions.visibilityOf(element));
+	}
+
+	/**
+	 * This method will wait for particular value of any attribute of a {@link WebElement}
+	 * 
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param element {@link WebElement} whose attribute to monitor
+	 * @param attribute defined for that HTML tag
+	 * @param value of that attribute
+	 * 
+	 * */
+	public void waitForDesiredValueOfAttribute(WebDriver driver, WebElement element, String attribute,String value) {
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		wait.ignoring(NoSuchElementException.class).ignoring(NoSuchFieldException.class)
+				.until(ExpectedConditions.attributeToBe(element, attribute, value));
+	}
+	/**
+	 * This method is used for synchronization. It will wait for the
+	 * {@link WebElement} to disappear/becomes invisible on the page. By default I have put the
+	 * maximum waiting time to be 20sec. If the element will be invisible before the
+	 * given time it will continue the execution without waiting for max time
+	 * provided.
+	 * 
+	 * @author Nitish
+	 * @param driver  {@link WebDriver} instance
+	 * @param element {@link WebElement} to wait for becoming invisible
+	 */
+	public void waitForElementToDisappear(WebDriver driver, WebElement element) {
+		try {
+			int i = 0;
+			do {
+				i++;
+				if(i>200) {
+					break;
+				}
+			}while(element.isDisplayed());
+		} catch (NoSuchElementException ns) {
+			//Do nothing and continue the execution as element is not present now.
+		} 
 	}
 
 	/**
@@ -95,7 +133,7 @@ public class ActionMethods {
 			}
 			return stringList;
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -130,21 +168,22 @@ public class ActionMethods {
 	}
 
 	/**
-	 * This method will return a particular css attribute value from style attribute of tag.
+	 * This method will return a particular css attribute value from style attribute
+	 * of tag.
 	 * 
 	 * @author Nitish
 	 * @param styleAttribute Style attribute of any {@link WebElement}
-	 * @param cssValueToGet Required CSS value to get from Style attribute
+	 * @param cssValueToGet  Required CSS value to get from Style attribute
 	 * @return CSS value in from of a string
 	 * 
-	 * */
+	 */
 	public String getCSSAttributeValueFromStyleAttribute(String styleAttribute, String cssValueToGet) {
 		// Separating different style attributes
 		String[] styleArr = styleAttribute.split(";");
 		HashMap<String, String> attributeMap = new HashMap<String, String>();
 		for (int i = 0; i < styleArr.length; i++) {
 			try {
-				 //Separating style attributes and its value and putting it in a Map
+				// Separating style attributes and its value and putting it in a Map
 				String[] attributes = styleArr[i].split(":");
 				attributeMap.put(attributes[0].trim(), attributes[1].trim());
 			} catch (NullPointerException np) {
@@ -153,25 +192,40 @@ public class ActionMethods {
 		}
 		return attributeMap.get(cssValueToGet);
 	}
-	
+
 	/**
-	 * This method will remove any "%" symbol or "px" after the exact CSS value
-	 * It will also convert the String value to Integer value which will help us in numerical computation
+	 * This method will remove any "%" symbol or "px" after the exact CSS value It
+	 * will also convert the String value to Integer value which will help us in
+	 * numerical computation
 	 * 
 	 * @author Nitish
 	 * @param stringCSSValue CSS value in form of a string e.g. 10px or 100%
-	 * @return It will return Integer value corresponding to String value passed 
-	 * after removing "px" or "%"
-	 * */
+	 * @return It will return Integer value corresponding to String value passed
+	 *         after removing "px" or "%" and removing digits after decimal
+	 */
 	public int getIntegerValueOfCSS(String stringCSSValue) {
-		int integerVal = Integer.parseInt(stringCSSValue.replace("%", "").replace("px", ""));
+		int integerVal = Integer.parseInt(stringCSSValue.replace("%", "").replace("px", "").split(".")[0]);
 		return integerVal;
 	}
 	
-	/* Incomplete...
-	 * public void waitForPropertyToChange(WebDriver driver, WebElement element,
-	 * String attribute, String attributeValue) { WebDriverWait wait = new
-	 * WebDriverWait(driver, 10); boolean match = true; do { match =
+	/**
+	 * This method is for clicking on {@link WebElement} 
+	 * where normal click do not works properly.
+	 * 
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param element {@link WebElement} to click
+	 * 
+	 * */
+	public void javascriptClick(WebDriver driver, WebElement element) {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("arguments[0].click()", element);
+	}
+
+	/*
+	 * Incomplete... public void waitForPropertyToChange(WebDriver driver,
+	 * WebElement element, String attribute, String attributeValue) { WebDriverWait
+	 * wait = new WebDriverWait(driver, 10); boolean match = true; do { match =
 	 * element.getAttribute(attribute).equalsIgnoreCase(attributeValue);
 	 * }while(match); wait. }
 	 */

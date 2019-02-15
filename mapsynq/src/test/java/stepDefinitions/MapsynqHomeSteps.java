@@ -6,20 +6,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.asserts.SoftAssert;
-import org.testng.internal.junit.ArrayAsserts;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -29,12 +26,12 @@ import reusableMethods.ActionMethods;
 import utils.Setup;
 
 /**
- * This Class is used for defining steps related to validations of mapsynq home page.
- * It mainly contains step definition of HomePage.feature file.
+ * This Class is used for defining steps related to validations of mapsynq home
+ * page. It mainly contains step definition of HomePage.feature file.
  * 
  * @author Nitish
  * 
- * */
+ */
 public class MapsynqHomeSteps {
 
 	static Logger Log = Logger.getLogger(MapsynqHomeSteps.class);
@@ -76,6 +73,8 @@ public class MapsynqHomeSteps {
 		try {
 			action.sync(driver, homePage.galactioAd);
 			action.syncClickable(driver, homePage.galactioAd);
+			//waiting for popup to come into view
+			action.waitForDesiredValueOfAttribute(driver, homePage.galactioAd, "style", "right: 0px;");
 			Log.info("Galactico Ad popup is displayed");
 		} catch (Exception e) {
 			Log.error("Galactico Ad popup is not displayed");
@@ -122,9 +121,11 @@ public class MapsynqHomeSteps {
 		try {
 			List<String> actualList = action.convertWebElementListToStringList(homePage.topRightLinks);
 			Log.info("Actual links: " + actualList);
-			/*Here I am using SoftAssert because it will check all the links and do not
-			 stops the execution if any link is not present
-			 It will show the error (if any) only after checking all the conditions*/
+			/*
+			 * Here I am using SoftAssert because it will check all the links and do not
+			 * stops the execution if any link is not present It will show the error (if
+			 * any) only after checking all the conditions
+			 */
 			SoftAssert sf = new SoftAssert();
 			for (String link : expectedLinks) {
 				boolean present = actualList.contains(link);
@@ -310,8 +311,10 @@ public class MapsynqHomeSteps {
 			Log.info("Actual Incident List: " + incidentDescriptionList);
 			// Taking random incident from list
 			int i = (int) (Math.random() * incidentDescriptionList.size());
-			// Splitting Incident data (time and description) by new line and taking only
-			// description
+			/*
+			 * Splitting Incident data (time and description) by new line and taking only
+			 * description
+			 */
 			String searchString = incidentDescriptionList.get(i).trim().split("\\r?\\n")[1];
 			Log.info("Searching for incident: " + searchString);
 			homePage.getTextboxWithPlaceholderText(driver, "Search incident location").sendKeys(searchString);
@@ -329,8 +332,11 @@ public class MapsynqHomeSteps {
 				}
 			} while (resultList.size() > 2);
 			List<String> resultDescriptionList = action.convertWebElementListToStringList(incidentList);
-			// Splitting Incident data (time and description) by new line and taking only
-			// description
+
+			/*
+			 * Splitting Incident data (time and description) by new line and taking only
+			 * description
+			 */
 			String actualResultText = resultDescriptionList.get(0).split("\\r?\\n")[1];
 			Log.info(actualResultText);
 			Assert.assertTrue(actualResultText.equalsIgnoreCase(searchString));
@@ -596,16 +602,18 @@ public class MapsynqHomeSteps {
 			Log.info("Original Source: " + originalSource);
 			Log.info("Original Destination: " + originalDestination);
 			homePage.swapOriginDestinationBTN.click();
-			/*If alert appears after clicking on swap button then it will switch to alert and accept that alert.
-			 * If Alert is not present, it will do nothing as of now.
+			/*
+			 * If alert appears after clicking on swap button then it will switch to alert
+			 * and accept that alert. If Alert is not present, it will do nothing as of now.
 			 */
 			try {
 				action.waitForAlertToAppear(driver);
 				Alert alert = driver.switchTo().alert();
 				alert.accept();
-			}catch (NoAlertPresentException na) {
-				/*Do Nothing in this case
-				 *Continue with execution without giving any error*/
+			} catch (NoAlertPresentException na) {
+				/*
+				 * Do Nothing in this case Continue with execution without giving any error
+				 */
 			}
 			Log.info("Clicked on Swap Origin/Destination button");
 			action.waitForPageLoad(driver);
@@ -613,8 +621,10 @@ public class MapsynqHomeSteps {
 			String newDestination = homePage.toDirectionTB.getAttribute("value");
 			Log.info("New Source: " + originalSource);
 			Log.info("New Destination: " + originalDestination);
-			/*Checking whether new destination is previous source and new source is previous
-			destination*/
+			/*
+			 * Checking whether new destination is previous source and new source is
+			 * previous destination
+			 */
 			Assert.assertTrue("Origin/Destion is not swapped after clicking on Swap origin/destination button",
 					newSource.equalsIgnoreCase(originalDestination) && newDestination.equalsIgnoreCase(originalSource));
 			Log.info("Origin/Destion is swapped after clicking on Swap origin/destination button");
@@ -633,10 +643,10 @@ public class MapsynqHomeSteps {
 			action.sync(driver, homePage.getButtonByName(driver, buttonName));
 			action.syncClickable(driver, homePage.getButtonByName(driver, buttonName));
 			homePage.getButtonByName(driver, buttonName).click();
-			Log.info("Clicked on "+buttonName+" button");
+			Log.info("Clicked on " + buttonName + " button");
 		} catch (UnhandledAlertException uh) {
-			//Do nothing and continue the execution
-			//This Alert will be handled separately
+			// Do nothing and continue the execution
+			// This Alert will be handled separately
 		} catch (Exception e) {
 			Log.error(e);
 			throw e;
@@ -657,13 +667,12 @@ public class MapsynqHomeSteps {
 			Log.error("Alert is not present");
 			throw na;
 		} catch (AssertionError ae) {
-			Log.error("Actual alert text: "+ alertText+" didn't match expected Alert text: "+ expectedAlertText);
+			Log.error("Actual alert text: " + alertText + " didn't match expected Alert text: " + expectedAlertText);
 			throw ae;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			Log.error(e);
 			throw e;
 		}
 	}
-
 
 }

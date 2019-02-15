@@ -78,5 +78,17 @@ public class GoogleMap {
 	@FindBy(how =How.XPATH, using = "//*[local-name()='svg' and @viewBox]/parent::div[contains(@id, 'RootContainer')]")
 	public WebElement googleMapContainer;
 	
+	@FindBy(how =How.ID, using = "popup_contentDiv")
+	public WebElement popupOnMap;
 	
+	@FindBy(how =How.ID, using = "popup_close")
+	public WebElement closePopupOnMap;
+	
+	//@FindBy(how =How.XPATH, using = "//img[contains(@src, 'cameras')]/preceding-sibling::label")
+	@FindBy(how =How.TAG_NAME, using = "label")
+	public WebElement popupDescriptionOnInsideFrameInMap;
+	
+	public WebElement getPopupByTitle(WebDriver driver, String title) {
+		return driver.findElement(By.xpath("//span[contains(@class, 'ui-dialog-title') and text() = '"+title+"']"));
+	}
 }

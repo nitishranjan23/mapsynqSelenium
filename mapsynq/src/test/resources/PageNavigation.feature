@@ -18,12 +18,8 @@ Background: Page Launch
 	
 	Scenario: Verify navigation of Mobile App link
 	When user clicks on "Mobile App" link
-	Then verify mapsynq mobile information page is opened
-	
-	Scenario: Verify navigation of Mobile App link
-	When user clicks on "Mobile App" link
 	Then verify mapsynq mobile information page is opened in new browser tab
-	
+
 	Scenario: Verify navigation of Galactio link
 	When user clicks on "Galactio" link
 	Then verify Galactio page is opened in new browser tab

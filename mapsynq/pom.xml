@@ -74,6 +74,40 @@
 			<version>1.2.17</version>
 		</dependency>
 
+		<!-- Making project independent of drivers for launching different browsers -->
+		<!-- <dependency>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>3.0.0</version>
+		</dependency> -->
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.5.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>3.0.0</version>
+
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
+
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
 		<!-- Added mainly to use its soft Assert feature -->
 		<dependency>
@@ -82,8 +116,6 @@
 			<version>6.14.3</version>
 			<scope>test</scope>
 		</dependency>
-
-
 	</dependencies>
 
 	<build>
@@ -100,7 +132,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.18.1</version>
+				<!-- <version>2.18.1</version> -->
+				<version>3.0.0-M3</version>
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
 					<!-- <includes> <exclude>**/*BDDTest.java</exclude> </includes> -->
@@ -122,11 +155,11 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<projectName>cucumber-jvm-example</projectName>
-							<outputDirectory>${project.build.directory}/site/cucumber-reports</outputDirectory>
+							<projectName>mapsynq</projectName>
+							<outputDirectory>${project.build.directory}/cucumber-html-reports</outputDirectory>
 							<cucumberOutput>${project.build.directory}/cucumber.json</cucumberOutput>
 							<enableFlashCharts>false</enableFlashCharts>
-							<skippedFails>true</skippedFails>
+							<!-- <skippedFails>true</skippedFails> -->
 						</configuration>
 					</execution>
 				</executions>
