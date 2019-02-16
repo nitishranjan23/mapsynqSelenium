@@ -118,6 +118,10 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+					<!-- <additionalClasspathElements>
+						<additionalClasspathElement>src/test/resources</additionalClasspathElement>
+						<additionalClasspathElement>src/test/java/steps</additionalClasspathElement>
+					</additionalClasspathElements> -->
 				</configuration>
 			</plugin>
 			<plugin>

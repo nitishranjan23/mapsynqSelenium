@@ -1,4 +1,4 @@
-package utils;
+package steps;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -27,7 +27,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import pageobjects.GoogleMap;
 import pageobjects.MapsynqHome;
 import pageobjects.NavigationPages;
-import reusablemethods.PropertiesFileReader;
+import utils.PropertiesFileReader;
 
 /**
  * Setup class for performing all setups like launching the browser before

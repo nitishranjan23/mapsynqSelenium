@@ -13,8 +13,7 @@ import cucumber.api.java.en.When;
 import pageobjects.GoogleMap;
 import pageobjects.MapsynqHome;
 import pageobjects.NavigationPages;
-import reusablemethods.ActionMethods;
-import utils.SetUp;
+import utils.ActionMethods;
 
 public class PageNavigation {
 
