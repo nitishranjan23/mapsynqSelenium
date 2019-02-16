@@ -219,7 +219,7 @@ public class GoogleMapsSteps {
 	public void verify_google_map_is_slided_to_show_upper_area_into_view() throws Throwable {
 		try {
 			action.waitForPageLoad(driver);
-			Thread.sleep(5000); // forcefully waiting (although it is a bad practice to use Thread.sleep)
+			action.forceWait(5);
 			String defaultTopVal = action.getCSSAttributeValueFromStyleAttribute(defaultStyle, "top");
 			int defaultIntVal = action.getIntegerValueOfCSS(defaultTopVal);
 			LOG.info("Previous Value: " + defaultIntVal);
@@ -244,7 +244,7 @@ public class GoogleMapsSteps {
 	public void verify_google_map_is_slided_to_show_lower_area_into_view() throws Throwable {
 		try {
 			action.waitForPageLoad(driver);
-			Thread.sleep(5000); // forcefully waiting (although it is a bad practice to use Thread.sleep)
+			action.forceWait(5);
 			String defaultTopVal = action.getCSSAttributeValueFromStyleAttribute(defaultStyle, "top");
 			int defaultIntVal = action.getIntegerValueOfCSS(defaultTopVal);
 			LOG.info("Previous Value: " + defaultIntVal);
@@ -269,7 +269,7 @@ public class GoogleMapsSteps {
 	public void verify_google_map_is_slided_to_show_left_area_into_view() throws Throwable {
 		try {
 			action.waitForPageLoad(driver);
-			Thread.sleep(5000); // forcefully waiting (although it is a bad practice to use Thread.sleep)
+			action.forceWait(5);
 			String defaultTopVal = action.getCSSAttributeValueFromStyleAttribute(defaultStyle, "left");
 			int defaultIntVal = action.getIntegerValueOfCSS(defaultTopVal);
 			LOG.info("Previous Value: " + defaultIntVal);
@@ -294,7 +294,7 @@ public class GoogleMapsSteps {
 	public void verify_google_map_is_slided_to_show_right_area_into_view() throws Throwable {
 		try {
 			action.waitForPageLoad(driver);
-			Thread.sleep(5000); // forcefully waiting (although it is a bad practice to use Thread.sleep)
+			action.forceWait(5);
 			String defaultTopVal = action.getCSSAttributeValueFromStyleAttribute(defaultStyle, "left");
 			int defaultIntVal = action.getIntegerValueOfCSS(defaultTopVal);
 			LOG.info("Previous Value: " + defaultIntVal);

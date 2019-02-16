@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -15,7 +14,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.remote.CapabilityType;
@@ -59,8 +57,9 @@ public class SetUp {
 	 * 
 	 * @author Nitish
 	 */
-	@SuppressWarnings("deprecation")
+	
 	@Before
+	@SuppressWarnings("deprecation")
 	public void setupTest(Scenario scenario) {
 		SetUp.scenario = scenario;
 		System.out.println("Scenario Name: " + scenario.getName());

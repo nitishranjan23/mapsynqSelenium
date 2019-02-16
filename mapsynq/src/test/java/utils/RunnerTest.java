@@ -14,7 +14,7 @@ import cucumber.api.junit.Cucumber;
  * */
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = {"src/test/resources/GoogleMapRelatedFunctionality.feature"}, 
+@CucumberOptions(features = {"src/test/resources"}, 
 					glue = {"src/test/java/steps"},
 					plugin = { "pretty", "json:target/cucumber.json", "html:target/cucumber-html-reports"}
 					,snippets = SnippetType.UNDERSCORE, dryRun = false, monochrome = true

@@ -45,16 +45,18 @@ public class ActionMethods {
 	}
 
 	/**
-	 * This method takes the screenshot based on user need and saves it in the screenshot folder
+	 * This method takes the screenshot based on user need and saves it in the
+	 * screenshot folder
 	 * 
 	 * @author Nitish
 	 * @param driver {@link WebDriver} instance
-	 * */
+	 */
 	public void takeScreenshot(WebDriver driver) throws IOException {
 		File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		File folderLocation = new File("screenshots/" + System.currentTimeMillis()+ SetUp.scenario.getName() + ".png");
+		File folderLocation = new File("screenshots/" + System.currentTimeMillis() + SetUp.scenario.getName() + ".png");
 		FileUtils.copyFile(screenshotFile, folderLocation);
 	}
+
 	/**
 	 * This method is used for synchronization. It will wait for the
 	 * {@link WebElement} to be present on the page By default I have put the
@@ -75,26 +77,28 @@ public class ActionMethods {
 	}
 
 	/**
-	 * This method will wait for particular value of any attribute of a {@link WebElement}
+	 * This method will wait for particular value of any attribute of a
+	 * {@link WebElement}
 	 * 
 	 * @author Nitish
-	 * @param driver {@link WebDriver} instance
-	 * @param element {@link WebElement} whose attribute to monitor
+	 * @param driver    {@link WebDriver} instance
+	 * @param element   {@link WebElement} whose attribute to monitor
 	 * @param attribute defined for that HTML tag
-	 * @param value of that attribute
+	 * @param value     of that attribute
 	 * 
-	 * */
-	public void waitForDesiredValueOfAttribute(WebDriver driver, WebElement element, String attribute,String value) {
+	 */
+	public void waitForDesiredValueOfAttribute(WebDriver driver, WebElement element, String attribute, String value) {
 		WebDriverWait wait = new WebDriverWait(driver, 30);
 		wait.ignoring(NoSuchElementException.class).ignoring(NoSuchFieldException.class)
 				.until(ExpectedConditions.attributeToBe(element, attribute, value));
 	}
+
 	/**
 	 * This method is used for synchronization. It will wait for the
-	 * {@link WebElement} to disappear/becomes invisible on the page. By default I have put the
-	 * maximum waiting time to be 20sec. If the element will be invisible before the
-	 * given time it will continue the execution without waiting for max time
-	 * provided.
+	 * {@link WebElement} to disappear/becomes invisible on the page. By default I
+	 * have put the maximum waiting time to be 20sec. If the element will be
+	 * invisible before the given time it will continue the execution without
+	 * waiting for max time provided.
 	 * 
 	 * @author Nitish
 	 * @param driver  {@link WebDriver} instance
@@ -105,13 +109,13 @@ public class ActionMethods {
 			int i = 0;
 			do {
 				i++;
-				if(i>200) {
+				if (i > 200) {
 					break;
 				}
-			}while(element.isDisplayed());
+			} while (element.isDisplayed());
 		} catch (NoSuchElementException ns) {
-			//Do nothing and continue the execution as element is not present now.
-		} 
+			// Do nothing and continue the execution as element is not present now.
+		}
 	}
 
 	/**
@@ -132,6 +136,22 @@ public class ActionMethods {
 		wait.ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class)
 				.ignoring(ElementNotInteractableException.class)
 				.until(ExpectedConditions.elementToBeClickable(element));
+	}
+
+	/**
+	 * If any of the above syncing methods not works then I am using this method
+	 * Although it is a <b>bad practice</b> to use Thread.sleep()
+	 * 
+	 * @author Nitish
+	 * @param timeInSec wait time in seconds
+	 * 
+	 */
+	public void forceWait(int timeInSec) {
+		try {
+			Thread.sleep(timeInSec*1000);
+		} catch (InterruptedException e) {
+			// Do nothing and continue the execution
+		}
 	}
 
 	/**
@@ -226,16 +246,16 @@ public class ActionMethods {
 		int integerVal = Integer.parseInt(stringCSSValue.replace("%", "").replace("px", "").split(".")[0]);
 		return integerVal;
 	}
-	
+
 	/**
-	 * This method is for clicking on {@link WebElement} 
-	 * where normal click do not works properly.
+	 * This method is for clicking on {@link WebElement} where normal click do not
+	 * works properly.
 	 * 
 	 * @author Nitish
-	 * @param driver {@link WebDriver} instance
+	 * @param driver  {@link WebDriver} instance
 	 * @param element {@link WebElement} to click
 	 * 
-	 * */
+	 */
 	public void javascriptClick(WebDriver driver, WebElement element) {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("arguments[0].click()", element);
