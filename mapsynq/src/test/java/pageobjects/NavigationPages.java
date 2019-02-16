@@ -1,4 +1,4 @@
-package pageObject;
+package pageobjects;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -14,9 +14,18 @@ import org.openqa.selenium.support.How;
  * */
 public class NavigationPages {
 
-	@FindBy(how = How.CSS, using = "signin_wrapper")
+	//Sign in page container
+	@FindBy(how = How.CLASS_NAME, using = "signin_wrapper")
 	public WebElement signInContainer;
 	
+	/**
+	 * This method will return a {@link WebElement} of a page heading
+	 * 
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * @param heading of page to verify
+	 * 
+	 * */
 	public WebElement getPageWithHeading(WebDriver driver, String heading) {
 		return driver.findElement(By.xpath("//h5[text() = '"+heading+"']"));
 	}

@@ -1,4 +1,4 @@
-package pageObject;
+package pageobjects;
 
 import java.util.List;
 
@@ -9,14 +9,14 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
-import utils.Setup;
+import utils.SetUp;
 
 
 /**
  * This is page object class for mapsynq home page.
  * 
  * Most {@link WebElement}s in this class is find by using {@link FindBy} 
- * which uses {@link PageFactory} which is defined in {@link Setup} class using
+ * which uses {@link PageFactory} which is defined in {@link SetUp} class using
  * PageFactory.initElements
  * 
  * @author Nitish

@@ -1,19 +1,27 @@
-package reusableMethods;
+package reusablemethods;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import utils.SetUp;
 
 public class ActionMethods {
 
@@ -36,6 +44,17 @@ public class ActionMethods {
 		}
 	}
 
+	/**
+	 * This method takes the screenshot based on user need and saves it in the screenshot folder
+	 * 
+	 * @author Nitish
+	 * @param driver {@link WebDriver} instance
+	 * */
+	public void takeScreenshot(WebDriver driver) throws IOException {
+		File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		File folderLocation = new File("screenshots/" + System.currentTimeMillis()+ SetUp.scenario.getName() + ".png");
+		FileUtils.copyFile(screenshotFile, folderLocation);
+	}
 	/**
 	 * This method is used for synchronization. It will wait for the
 	 * {@link WebElement} to be present on the page By default I have put the

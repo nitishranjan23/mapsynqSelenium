@@ -1,4 +1,4 @@
-package stepDefinitions;
+package steps;
 
 import java.util.List;
 import java.util.Properties;
@@ -10,40 +10,43 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.asserts.SoftAssert;
 
+import cucumber.api.Scenario;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import pageObject.GoogleMap;
-import pageObject.MapsynqHome;
-import reusableMethods.ActionMethods;
-import utils.Setup;
+import pageobjects.GoogleMap;
+import pageobjects.MapsynqHome;
+import reusablemethods.ActionMethods;
+import utils.SetUp;
 
 /**
- * This Class is used for defining steps related to validations of interactions on Google Map.
- * It mainly contains step definition of GoogleMapRelatedFunctionality.feature file.
+ * This Class is used for defining steps related to validations of interactions
+ * on Google Map. It mainly contains step definition of
+ * GoogleMapRelatedFunctionality.feature file.
  * 
  * @author Nitish
- * */
+ */
 public class GoogleMapsSteps {
 
 	private static final Logger LOG = Logger.getLogger(GoogleMapsSteps.class);
-	WebDriver driver = Setup.driver;
-	Properties prop = Setup.properties;
+	WebDriver driver = SetUp.driver;
+	Properties prop = SetUp.properties;
 	ActionMethods action = new ActionMethods();
-	Actions actions = Setup.action;
-	MapsynqHome homePage = Setup.homePage;
-	GoogleMap googleMap = Setup.googleMapPage;
-			
+	Actions actions = SetUp.action;
+	MapsynqHome homePage = SetUp.homePage;
+	GoogleMap googleMap = SetUp.googleMapPage;
+	Scenario scenario = SetUp.scenario;
+
 	private String defaultStyle;
-	
+
 	@When("^Google map is loaded$")
 	public void google_map_is_loaded() throws Throwable {
-	     try {
-	    	 //Here we will be waiting for page loading status to be complete
-	    	 action.waitForPageLoad(driver);
-	    	 LOG.info("Google Map is loaded");
-	     } catch (Exception e) {
+		try {
+			// Here we will be waiting for page loading status to be complete
+			action.waitForPageLoad(driver);
+			LOG.info("Google Map is loaded");
+		} catch (Exception e) {
 			LOG.error("Google Map is not loaded properly");
-			LOG.error(e);
+			scenario.write("Google Map is not loaded properly");
 			throw e;
 		}
 	}
@@ -52,9 +55,11 @@ public class GoogleMapsSteps {
 	public void verify_panel_buttons_are_present_on_top_of_the_map_to_show_following(List<String> pannelButtons)
 			throws Throwable {
 		try {
-			/*Here I am using SoftAssert because it will check all the links and do not
-			 stops the execution if any link is not present
-			 It will show the error (if any) only after checking all the conditions*/
+			/*
+			 * Here I am using SoftAssert because it will check all the links and do not
+			 * stops the execution if any link is not present It will show the error (if
+			 * any) only after checking all the conditions
+			 */
 			SoftAssert sf = new SoftAssert();
 			for (String buttonName : pannelButtons) {
 				boolean present = googleMap.getTopPannelButtons(driver, buttonName).isDisplayed();
@@ -67,6 +72,7 @@ public class GoogleMapsSteps {
 			LOG.info("All buttons are present");
 		} catch (Exception e) {
 			LOG.error("All/Some buttons are not present");
+			scenario.write("All/Some buttons are not present");
 			throw e;
 		}
 	}
@@ -76,10 +82,9 @@ public class GoogleMapsSteps {
 		try {
 			String buttonClass = googleMap.getTopPannelButtons(driver, buttonName).getAttribute("class");
 			if (!buttonClass.contains("Active")) {
-			action.syncClickable(driver, googleMap.getTopPannelButtons(driver, buttonName));
-			googleMap.getTopPannelButtons(driver, buttonName).click();
-			//actions.moveToElement(googleMap.getTopPannelButtons(driver, buttonName)).click().build().perform();
-			LOG.info("Clicked on " + buttonName + " panel button");
+				action.syncClickable(driver, googleMap.getTopPannelButtons(driver, buttonName));
+				googleMap.getTopPannelButtons(driver, buttonName).click();
+				LOG.info("Clicked on " + buttonName + " panel button");
 			} else {
 				LOG.info(buttonName + " panel button is already active");
 			}
@@ -99,7 +104,7 @@ public class GoogleMapsSteps {
 		} catch (AssertionError ae) {
 			LOG.error("Incidents are not marked on the map");
 			throw new Throwable("Incidents are not marked on the map");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
@@ -124,10 +129,11 @@ public class GoogleMapsSteps {
 			throws Throwable {
 		try {
 			SoftAssert sf = new SoftAssert();
-			for(String button: directionSliderButtons) {
-				sf.assertTrue(googleMap.getLeftRightUpDownButtonOnMap(driver, button).isDisplayed(), button +" direction slider button is not present on the map");
-				LOG.info(button +" direction slider button is present on the map");
-			} 
+			for (String button : directionSliderButtons) {
+				sf.assertTrue(googleMap.getLeftRightUpDownButtonOnMap(driver, button).isDisplayed(),
+						button + " direction slider button is not present on the map");
+				LOG.info(button + " direction slider button is present on the map");
+			}
 			sf.assertAll();
 			LOG.info("All direction slider buttons are present on the map");
 		} catch (AssertionError ae) {
@@ -141,28 +147,34 @@ public class GoogleMapsSteps {
 
 	@Then("^verify \"([^\"]*)\" and \"([^\"]*)\" buttons are present on the map$")
 	public void verify_and_buttons_are_present_on_the_map(String buttonName1, String buttonName2) throws Throwable {
-		//verification for first button
+		// verification for first button
 		try {
-			Assert.assertTrue(buttonName1 + " button is not present on the map", googleMap.getZoomInZoomOutButtonOnZoomSliderOnMap(driver, buttonName1).isDisplayed());
+			Assert.assertTrue(buttonName1 + " button is not present on the map",
+					googleMap.getZoomInZoomOutButtonOnZoomSliderOnMap(driver, buttonName1).isDisplayed());
 			LOG.info(buttonName1 + " button is present on the map");
 		} catch (Exception e) {
-			/*Here both of Exception and Assertion Error denote that object is not present
+			/*
+			 * Here both of Exception and Assertion Error denote that object is not present
 			 * so not catching both the exception separately.
-			 * */
+			 */
 			LOG.error(buttonName1 + " button is not present on the map");
+			scenario.write(buttonName1 + " button is not present on the map");
 			LOG.error(e);
 			throw e;
 		}
-		
-		//verification for second button
+
+		// verification for second button
 		try {
-			Assert.assertTrue(buttonName2 + " button is not present on the map", googleMap.getZoomInZoomOutButtonOnZoomSliderOnMap(driver, buttonName2).isDisplayed());
+			Assert.assertTrue(buttonName2 + " button is not present on the map",
+					googleMap.getZoomInZoomOutButtonOnZoomSliderOnMap(driver, buttonName2).isDisplayed());
 			LOG.info(buttonName2 + " button is present on the map");
 		} catch (Exception e) {
-			/*Here both of Exception and Assertion Error denote that object is not present
+			/*
+			 * Here both of Exception and Assertion Error denote that object is not present
 			 * so not catching both the exception separately.
-			 * */
+			 */
 			LOG.error(buttonName2 + " button is not present on the map");
+			scenario.write(buttonName2 + " button is not present on the map");
 			LOG.error(e);
 			throw e;
 		}
@@ -174,10 +186,12 @@ public class GoogleMapsSteps {
 			Assert.assertTrue("Zoombar is not present on the map", googleMap.zoomBarOnMap.isDisplayed());
 			LOG.info("Zoombar is present on the map");
 		} catch (Exception e) {
-			/*Here both of Exception and Assertion Error denote that object is not present
+			/*
+			 * Here both of Exception and Assertion Error denote that object is not present
 			 * so not catching both the exception separately.
-			 * */
+			 */
 			LOG.error("Zoombar is not present on the map");
+			scenario.write("Zoombar is not present on the map");
 			LOG.error(e);
 			throw e;
 		}
@@ -187,13 +201,15 @@ public class GoogleMapsSteps {
 	public void click_on_direction_button(String buttonName) throws Throwable {
 		try {
 			defaultStyle = googleMap.googleMapContainer.getAttribute("style");
-			LOG.info("Default Style: "+ defaultStyle);
+			LOG.info("Default Style: " + defaultStyle);
 			action.syncClickable(driver, googleMap.getLeftRightUpDownButtonOnMap(driver, buttonName));
 			googleMap.getLeftRightUpDownButtonOnMap(driver, buttonName).click();
-			//actions.moveToElement(driver, googleMap.getLeftRightUpDownButtonOnMap(driver, buttonName)).click().build().perform();
+			// actions.moveToElement(driver, googleMap.getLeftRightUpDownButtonOnMap(driver,
+			// buttonName)).click().build().perform();
 			LOG.info("Clicked on " + buttonName + " direction button");
 		} catch (Exception e) {
 			LOG.error("Unable to click on " + buttonName + " direction button");
+			scenario.write("Unable to click on " + buttonName + " direction button");
 			LOG.error(e);
 			throw e;
 		}
@@ -203,22 +219,22 @@ public class GoogleMapsSteps {
 	public void verify_google_map_is_slided_to_show_upper_area_into_view() throws Throwable {
 		try {
 			action.waitForPageLoad(driver);
-			Thread.sleep(5000); //forcefully waiting (although it is a bad practice to use Thread.sleep)
+			Thread.sleep(5000); // forcefully waiting (although it is a bad practice to use Thread.sleep)
 			String defaultTopVal = action.getCSSAttributeValueFromStyleAttribute(defaultStyle, "top");
 			int defaultIntVal = action.getIntegerValueOfCSS(defaultTopVal);
-			LOG.info("Previous Value: "+ defaultIntVal);
+			LOG.info("Previous Value: " + defaultIntVal);
 			String currentStyle = googleMap.googleMapContainer.getAttribute("style");
-			LOG.info("Current Style: "+ currentStyle);
+			LOG.info("Current Style: " + currentStyle);
 			String currentTopVal = action.getCSSAttributeValueFromStyleAttribute(currentStyle, "top");
 			int currentIntVal = action.getIntegerValueOfCSS(currentTopVal);
-			LOG.info("Current Value: "+ currentIntVal);
-			//here we are verifying whether position in view changes or not 
+			LOG.info("Current Value: " + currentIntVal);
+			// here we are verifying whether position in view changes or not
 			Assert.assertTrue("Google map is not slided to show upper area into view", currentIntVal < defaultIntVal);
 			LOG.info("Google map is slided to show upper area into view");
 		} catch (AssertionError ae) {
 			LOG.error("Google map is not slided to show upper area into view");
 			throw new Throwable("Google map is not slided to show upper area into view");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
@@ -228,22 +244,22 @@ public class GoogleMapsSteps {
 	public void verify_google_map_is_slided_to_show_lower_area_into_view() throws Throwable {
 		try {
 			action.waitForPageLoad(driver);
-			Thread.sleep(5000); //forcefully waiting (although it is a bad practice to use Thread.sleep)
+			Thread.sleep(5000); // forcefully waiting (although it is a bad practice to use Thread.sleep)
 			String defaultTopVal = action.getCSSAttributeValueFromStyleAttribute(defaultStyle, "top");
 			int defaultIntVal = action.getIntegerValueOfCSS(defaultTopVal);
-			LOG.info("Previous Value: "+ defaultIntVal);
+			LOG.info("Previous Value: " + defaultIntVal);
 			String currentStyle = googleMap.googleMapContainer.getAttribute("style");
-			LOG.info("Current Style: "+ currentStyle);
+			LOG.info("Current Style: " + currentStyle);
 			String currentTopVal = action.getCSSAttributeValueFromStyleAttribute(currentStyle, "top");
 			int currentIntVal = action.getIntegerValueOfCSS(currentTopVal);
-			LOG.info("Current Value: "+ currentIntVal);
-			//here we are verifying whether position in view changes or not 
+			LOG.info("Current Value: " + currentIntVal);
+			// here we are verifying whether position in view changes or not
 			Assert.assertTrue("Google map is not slided to show lower area into view", currentIntVal > defaultIntVal);
 			LOG.info("Google map is slided to show upper lower into view");
 		} catch (AssertionError ae) {
 			LOG.error("Google map is not slided to show lower area into view");
 			throw new Throwable("Google map is not slided to show lower area into view");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
@@ -253,22 +269,22 @@ public class GoogleMapsSteps {
 	public void verify_google_map_is_slided_to_show_left_area_into_view() throws Throwable {
 		try {
 			action.waitForPageLoad(driver);
-			Thread.sleep(5000); //forcefully waiting (although it is a bad practice to use Thread.sleep)
+			Thread.sleep(5000); // forcefully waiting (although it is a bad practice to use Thread.sleep)
 			String defaultTopVal = action.getCSSAttributeValueFromStyleAttribute(defaultStyle, "left");
 			int defaultIntVal = action.getIntegerValueOfCSS(defaultTopVal);
-			LOG.info("Previous Value: "+ defaultIntVal);
+			LOG.info("Previous Value: " + defaultIntVal);
 			String currentStyle = googleMap.googleMapContainer.getAttribute("style");
-			LOG.info("Current Style: "+ currentStyle);
+			LOG.info("Current Style: " + currentStyle);
 			String currentTopVal = action.getCSSAttributeValueFromStyleAttribute(currentStyle, "left");
 			int currentIntVal = action.getIntegerValueOfCSS(currentTopVal);
-			LOG.info("Current Value: "+ currentIntVal);
-			//here we are verifying whether position in view changes or not 
+			LOG.info("Current Value: " + currentIntVal);
+			// here we are verifying whether position in view changes or not
 			Assert.assertTrue("Google map is not slided to show left area into view", currentIntVal < defaultIntVal);
 			LOG.info("Google map is slided to show upper left into view");
 		} catch (AssertionError ae) {
 			LOG.error("Google map is not slided to show left area into view");
 			throw new Throwable("Google map is not slided to show left area into view");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
@@ -278,22 +294,22 @@ public class GoogleMapsSteps {
 	public void verify_google_map_is_slided_to_show_right_area_into_view() throws Throwable {
 		try {
 			action.waitForPageLoad(driver);
-			Thread.sleep(5000); //forcefully waiting (although it is a bad practice to use Thread.sleep)
+			Thread.sleep(5000); // forcefully waiting (although it is a bad practice to use Thread.sleep)
 			String defaultTopVal = action.getCSSAttributeValueFromStyleAttribute(defaultStyle, "left");
 			int defaultIntVal = action.getIntegerValueOfCSS(defaultTopVal);
-			LOG.info("Previous Value: "+ defaultIntVal);
+			LOG.info("Previous Value: " + defaultIntVal);
 			String currentStyle = googleMap.googleMapContainer.getAttribute("style");
-			LOG.info("Current Style: "+ currentStyle);
+			LOG.info("Current Style: " + currentStyle);
 			String currentTopVal = action.getCSSAttributeValueFromStyleAttribute(currentStyle, "left");
 			int currentIntVal = action.getIntegerValueOfCSS(currentTopVal);
-			LOG.info("Current Value: "+ currentIntVal);
-			//here we are verifying whether position in view changes or not 
+			LOG.info("Current Value: " + currentIntVal);
+			// here we are verifying whether position in view changes or not
 			Assert.assertTrue("Google map is not slided to show left area into view", currentIntVal > defaultIntVal);
 			LOG.info("Google map is slided to show upper right into view");
 		} catch (AssertionError ae) {
 			LOG.error("Google map is not slided to show right area into view");
 			throw new Throwable("Google map is not slided to show right area into view");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
@@ -316,16 +332,18 @@ public class GoogleMapsSteps {
 			incidentDescToClick = incidentDescriptionList.get(i).trim().split("\\r?\\n")[1];
 			incidentList.get(i).click();
 			LOG.info("Click on incident: " + incidentDescToClick);
-			
+
 			action.sync(driver, googleMap.popupOnMap);
 			popupText = googleMap.popupOnMap.getText().trim();
-			LOG.info("Popup text: " +popupText);
-			Assert.assertTrue("Clicking on incident donot displays that incident on the map", popupText.contains(incidentDescToClick));
+			LOG.info("Popup text: " + popupText);
+			Assert.assertTrue("Clicking on incident donot displays that incident on the map",
+					popupText.contains(incidentDescToClick));
 			LOG.info("Clicking on incident displays that incident on the map");
-		}catch (AssertionError ae) {
+		} catch (AssertionError ae) {
 			LOG.error("Clicking on incident donot displays that incident on the map");
-			throw new Throwable("Clicking on incident: "+incidentDescToClick+" displays the incident: "+popupText+" on the map");
-		}catch (Exception e) {
+			throw new Throwable("Clicking on incident: " + incidentDescToClick + " displays the incident: " + popupText
+					+ " on the map");
+		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
@@ -342,7 +360,7 @@ public class GoogleMapsSteps {
 		} catch (AssertionError ae) {
 			LOG.error(panelName + " panel is not active on the map");
 			throw new Throwable(panelName + " panel is not active on the map");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
@@ -367,6 +385,7 @@ public class GoogleMapsSteps {
 			LOG.info("Information popup is closed successfully");
 		} catch (Exception e) {
 			LOG.error("Information popup is not closed");
+			scenario.write("Information popup is not closed");
 			LOG.error(e);
 			throw e;
 		}
@@ -385,26 +404,29 @@ public class GoogleMapsSteps {
 			 * Splitting Camera data (time and description) by new line and taking only
 			 * description
 			 */
-			cameraDescToClick = cameraDescriptionList.get(i).trim();//.split("\\r?\\n")[1];
+			cameraDescToClick = cameraDescriptionList.get(i).trim();// .split("\\r?\\n")[1];
 			cameraList.get(i).click();
 			LOG.info("Click on camera: " + cameraDescToClick);
-			
+
 			action.sync(driver, googleMap.popupOnMap);
-			driver.switchTo().frame("ifCam"); //switching to camera description frame in popoup
+			driver.switchTo().frame("ifCam"); // switching to camera description frame in popoup
 			popupText = googleMap.popupDescriptionOnInsideFrameInMap.getText().trim();
-			driver.switchTo().defaultContent();//comming out of the camera description frame
-			LOG.info("Popup text: " +popupText);
-			Assert.assertTrue("Clicking on camera donot displays that camera on the map", popupText.contains(cameraDescToClick));
+			driver.switchTo().defaultContent();// comming out of the camera description frame
+			LOG.info("Popup text: " + popupText);
+			Assert.assertTrue("Clicking on camera donot displays that camera on the map",
+					popupText.contains(cameraDescToClick));
 			LOG.info("Clicking on camera displays that camera on the map");
-		}catch (AssertionError ae) {
-			LOG.error("Clicking on camera: "+cameraDescToClick+" displays the camera: "+ popupText+" on the map");
-			throw new Throwable("Clicking on camera: "+cameraDescToClick+" displays the camera: "+ popupText+" on the map");
-		}catch (Exception e) {
+		} catch (AssertionError ae) {
+			LOG.error(
+					"Clicking on camera: " + cameraDescToClick + " displays the camera: " + popupText + " on the map");
+			throw new Throwable(
+					"Clicking on camera: " + cameraDescToClick + " displays the camera: " + popupText + " on the map");
+		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
 	}
- 
+
 	@Then("^verify clicking on any Tolls displays that Tolls on the map$")
 	public void verify_clicking_on_any_Tolls_displays_that_Tolls_on_the_map() throws Throwable {
 		String tollDescToClick = null;
@@ -418,26 +440,28 @@ public class GoogleMapsSteps {
 			 * Splitting Toll data (time and description) by new line and taking only
 			 * description
 			 */
-			tollDescToClick = tollDescriptionList.get(i).trim();//.split("\\r?\\n")[1];
-			//since above normal click is not working in every case so using javascript click
+			tollDescToClick = tollDescriptionList.get(i).trim();// .split("\\r?\\n")[1];
+			// since above normal click is not working in every case so using javascript
+			// click
 			action.javascriptClick(driver, tollList.get(i));
 			LOG.info("Click on Toll: " + tollDescToClick);
-			
+
 			action.sync(driver, googleMap.popupOnMap);
-			driver.switchTo().frame(0); //switching to only available frame in popoup
+			driver.switchTo().frame(0); // switching to only available frame in popoup
 			popupText = googleMap.popupDescriptionOnInsideFrameInMap.getText().trim();
-			driver.switchTo().defaultContent();//comming out of the description frame
-			LOG.info("Popup text: " +popupText);
-			//Comparing case in-sensative text only
-			Assert.assertTrue("Clicking on Toll donot displays that Toll on the map", popupText.toLowerCase().contains(tollDescToClick.toLowerCase()));
+			driver.switchTo().defaultContent();// comming out of the description frame
+			LOG.info("Popup text: " + popupText);
+			// Comparing case in-sensative text only
+			Assert.assertTrue("Clicking on Toll donot displays that Toll on the map",
+					popupText.toLowerCase().contains(tollDescToClick.toLowerCase()));
 			LOG.info("Clicking on Toll displays that Toll on the map");
-		}catch (AssertionError ae) {
-			LOG.error("Clicking on Toll: "+tollDescToClick+" displays the Toll "+popupText+" on the map");
-			throw new Throwable("Clicking on Toll: "+tollDescToClick+" displays the Toll "+popupText+" on the map");
-		}catch (Exception e) {
+		} catch (AssertionError ae) {
+			LOG.error("Clicking on Toll: " + tollDescToClick + " displays the Toll " + popupText + " on the map");
+			throw new Throwable(
+					"Clicking on Toll: " + tollDescToClick + " displays the Toll " + popupText + " on the map");
+		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
 	}
-
 }

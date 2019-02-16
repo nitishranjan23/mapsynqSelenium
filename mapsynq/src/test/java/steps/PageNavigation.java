@@ -1,33 +1,30 @@
-package stepDefinitions;
+package steps;
 
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 
+import cucumber.api.Scenario;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import pageObject.GoogleMap;
-import pageObject.MapsynqHome;
-import pageObject.NavigationPages;
-import reusableMethods.ActionMethods;
-import utils.Setup;
+import pageobjects.GoogleMap;
+import pageobjects.MapsynqHome;
+import pageobjects.NavigationPages;
+import reusablemethods.ActionMethods;
+import utils.SetUp;
 
 public class PageNavigation {
 
 	private static final Logger LOG = Logger.getLogger(PageNavigation.class);
-	WebDriver driver = Setup.driver;
-	Properties prop = Setup.properties;
+	WebDriver driver = SetUp.driver;
 	ActionMethods action = new ActionMethods();
-	Actions actions = Setup.action;
-	MapsynqHome homePage = Setup.homePage;
-	GoogleMap googleMap = Setup.googleMapPage;
-	NavigationPages navigationPage = Setup.navigationPage;
-	
+	MapsynqHome homePage = SetUp.homePage;
+	GoogleMap googleMap = SetUp.googleMapPage;
+	NavigationPages navigationPage = SetUp.navigationPage;
+	Scenario scenario = SetUp.scenario;
 	
 	@When("^user clicks on \"([^\"]*)\" link$")
 	public void user_clicks_on_link(String linkName) throws Throwable {
@@ -44,7 +41,7 @@ public class PageNavigation {
 	    	 for (WebElement link: homePage.topRightLinks) {
 	    		 if (link.getText().trim().equalsIgnoreCase(linkName)) {
 	    			 link.click();
-	    			 LOG.info("Clicked on "+link + " link");
+	    			 LOG.info("Clicked on "+linkName + " link");
 	    			 break;
 	    		 }
 	    	 }
@@ -61,6 +58,7 @@ public class PageNavigation {
 			LOG.info("Sign in page is opened successfully");
 		} catch (Exception e) {
 			LOG.error("Sign in page didn't open");
+			scenario.write("Sign in page didn't open");
 			throw e;
 		}
 	}
@@ -72,6 +70,7 @@ public class PageNavigation {
 			LOG.info(pageName +" page is opened successfully");
 		} catch (Exception e) {
 			LOG.error(pageName +" page didn't open");
+			scenario.write(pageName +" page didn't open");
 			throw e;
 		}
 	}
@@ -85,6 +84,9 @@ public class PageNavigation {
 			action.waitForPageLoad(driver);
 			Assert.assertTrue("Mapsynq mobile information page didn't open in new browser tab",driver.getTitle().trim().equalsIgnoreCase("mapSYNQ Mobile") && driver.getWindowHandles().size()>1);
 			LOG.info("Mapsynq mobile information page opened successfully in new browser tab");
+		} catch (AssertionError ae) {
+			LOG.error("Mapsynq mobile information page didn't open in new browser tab");
+			throw new Throwable("Mapsynq mobile information page didn't open in new browser tab");
 		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
@@ -100,11 +102,13 @@ public class PageNavigation {
 			action.waitForPageLoad(driver);
 			Assert.assertTrue("Galactio page didn't open in new browser tab",driver.getTitle().trim().equalsIgnoreCase("Galactio") && driver.getWindowHandles().size()>1);
 			LOG.info("Galactio page opened successfully in new browser tab");
+		} catch (AssertionError ae) {
+			LOG.error("Galactio page didn't open in new browser tab");
+			throw new Throwable("Galactio page didn't open in new browser tab");
 		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
 		}
-	     
 	}
 
 	@Then("^verify Google Play page is opened in new browser tab$")
@@ -117,6 +121,9 @@ public class PageNavigation {
 			Assert.assertTrue("Google Play page didn't open in new browser tab",driver.getWindowHandles().size()>1);
 			action.sync(driver, navigationPage.googlePlayLogo);
 			LOG.info("Google Play page is opened in new browser tab");
+		} catch (AssertionError ae) {
+			LOG.error("Google Play page didn't open in new browser tab");
+			throw new Throwable("Google Play page didn't open in new browser tab");
 		} catch (Exception e) {
 			LOG.error(e);
 			throw e;
@@ -130,10 +137,9 @@ public class PageNavigation {
 	    	 LOG.info(title + " popup is diaplayed");
 	     } catch (Exception e) {
 			LOG.error(title + " popup is not displayed");
+			scenario.write(title + " popup is not displayed");
 			LOG.error(e);
 			throw e;
 		}
 	}
-
-
 }

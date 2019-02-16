@@ -1,7 +1,7 @@
-#Author: Nitish
-#Date: 11th Feb 2019
+###Author: Nitish
+###Date: 11th Feb 2019
 Feature: To test Google Map related features of mapsynq home page
-  Here I am going to validate different map related feature like display of icons and popup informations on the map
+  #Here I am going to validate different map related feature like display of icons and popup informations on the map
 
   Background: Page Launch
     Given open the mapsync page with given URL

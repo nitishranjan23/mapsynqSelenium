@@ -1,7 +1,13 @@
 package utils;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -9,6 +15,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.remote.CapabilityType;
@@ -19,17 +26,18 @@ import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import pageObject.GoogleMap;
-import pageObject.MapsynqHome;
-import pageObject.NavigationPages;
-import reusableMethods.PropertiesFileReader;
+import pageobjects.GoogleMap;
+import pageobjects.MapsynqHome;
+import pageobjects.NavigationPages;
+import reusablemethods.PropertiesFileReader;
+
 /**
- * Setup class for performing all setups like launching the browser 
- * before starting test and closing the browser after test.
+ * Setup class for performing all setups like launching the browser before
+ * starting test and closing the browser after test.
  * 
  * @author Nitish
- * */
-public class Setup {
+ */
+public class SetUp {
 
 	static {
 		DOMConfigurator.configure("log4j.xml"); // Configure logger from log4j.xml file
@@ -41,7 +49,7 @@ public class Setup {
 	public static NavigationPages navigationPage;
 	static PropertiesFileReader fileReader = new PropertiesFileReader();
 	public static Actions action;
-	static Scenario scenario;
+	public static Scenario scenario;
 
 	/**
 	 * Initialization method: Here browser is selected based on data in
@@ -54,26 +62,37 @@ public class Setup {
 	@SuppressWarnings("deprecation")
 	@Before
 	public void setupTest(Scenario scenario) {
-		Setup.scenario = scenario;
+		SetUp.scenario = scenario;
 		System.out.println("Scenario Name: " + scenario.getName());
 		properties = fileReader.loadPropertiesFile("globalConfig.properties"); // reading properties file
 
 		String browser = properties.getProperty("browser");
 		String headless = properties.getProperty("headless");
-		//For headless execution I will be using Chrome here in headless mode
+		// For headless execution I will be using Chrome here in headless mode
 		if (headless.equalsIgnoreCase("true")) {
 			ChromeOptions chromeOptions = new ChromeOptions();
+			// Getting current screen resolution
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			int width = screenSize.width;
+			int height = screenSize.height;
+			System.out.println(width + "x" + height);
+			// Launching headless chrome in same size as of current screen resolution
+			// chromeOptions.addArguments("window-size="+width+"x"+height);
+			chromeOptions.addArguments("window-size=1366x768");
+			chromeOptions.addArguments("--allow-insecure-localhost");
+			chromeOptions.addArguments("--disable-gpu");
 			chromeOptions.addArguments("--headless");
 			WebDriverManager.chromedriver().setup();
 			driver = new ChromeDriver(chromeOptions);
-		}else if (browser.equalsIgnoreCase("IE")) {
+		} else if (browser.equalsIgnoreCase("IE")) {
+			
 			DesiredCapabilities dc = DesiredCapabilities.internetExplorer();
-			  dc.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-			  dc.setCapability(InternetExplorerDriver.
-			  INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-			  dc.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
-			  dc.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
-			  dc.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, false);
+			dc.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+			dc.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+			dc.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+			dc.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+			dc.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, false);
+			//dc.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT, true);
 			WebDriverManager.iedriver().setup();
 			driver = new InternetExplorerDriver(dc);
 		} else if (browser.equalsIgnoreCase("Chrome")) {
@@ -95,18 +114,31 @@ public class Setup {
 
 	/**
 	 * To close all driver instances and take screenshot of failed Testcase and
-	 * attach it to report file
+	 * attach it to report file also it will save taken failed screenshots to
+	 * screenshot/failed folder
 	 * 
 	 * @author Nitish
+	 * @throws IOException
 	 */
 	@After
-	public void closeResources(Scenario scenario) {
+	public void closeResources(Scenario scenario) throws IOException {
+		File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		if (scenario.isFailed()) {
+			// Taking screenshot and adding/embedding it to report
 			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-			scenario.embed(screenshot, "image/png"); // Adding/Embedding failure screenshot to report
+			scenario.embed(screenshot, "image/png");
+			
+			// Saving screenshot of failed scenarios in screenshot/failed folder
+			File folderLocation = new File(
+					"screenshots/failed/" + System.currentTimeMillis() + "_" + scenario.getName() + ".png");
+			FileUtils.copyFile(screenshotFile, folderLocation);
+		} else {
+			// Saving screenshot of passed scenarios in screenshot/passed folder
+			File folderLocation = new File(
+					"screenshots/passed/" + System.currentTimeMillis() + "_" + scenario.getName() + ".png");
+			FileUtils.copyFile(screenshotFile, folderLocation);
 		}
-		
-		 driver.close();
-		 driver.quit();
+		driver.close();
+		driver.quit();
 	}
 }

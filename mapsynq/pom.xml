@@ -21,7 +21,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
 		</dependency>
 
 		<!-- Selenium dependency -->
@@ -43,28 +43,22 @@
 		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-junit</artifactId>
-			<version>1.2.3</version>
-			<scope>test</scope>
+			<version>1.2.5</version>
+			<!-- <scope>test</scope> -->
 		</dependency>
 
 		<!-- Dependency to bind Cucumber with java -->
 		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-java</artifactId>
-			<version>1.2.3</version>
+			<version>1.2.5</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>pro-plugin</artifactId>
-			<version>2.1.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>net.masterthought</groupId>
 			<artifactId>cucumber-reporting</artifactId>
-			<version>4.4.0</version>
+			<version>4.3.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
@@ -74,23 +68,20 @@
 			<version>1.2.17</version>
 		</dependency>
 
-		<!-- Making project independent of drivers for launching different browsers -->
-		<!-- <dependency>
-			<groupId>io.github.bonigarcia</groupId>
-			<artifactId>webdrivermanager</artifactId>
-			<version>3.0.0</version>
-		</dependency> -->
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.5.5</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.5.5</version>
 		</dependency>
+
+		<!-- Making project independent of drivers for launching different browsers 
+			WebDriver manager dependency -->
 		<dependency>
 			<groupId>io.github.bonigarcia</groupId>
 			<artifactId>webdrivermanager</artifactId>
@@ -106,8 +97,8 @@
 					<artifactId>log4j</artifactId>
 				</exclusion>
 			</exclusions>
-
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
 		<!-- Added mainly to use its soft Assert feature -->
 		<dependency>
@@ -123,7 +114,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
+				<version>3.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -136,17 +127,12 @@
 				<version>3.0.0-M3</version>
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
-					<!-- <includes> <exclude>**/*BDDTest.java</exclude> </includes> -->
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>net.masterthought</groupId>
 				<artifactId>maven-cucumber-reporting</artifactId>
-				<version>2.0.0</version>
-				<!-- <dependencies> <dependency> <groupId>com.googlecode.totallylazy</groupId> 
-					<artifactId>totallylazy</artifactId> <version>991</version> <scope>system</scope> 
-					<systemPath>${project.basedir}/lib/totallylazy-991.jar</systemPath> </dependency> 
-					</dependencies> -->
+				<version>4.3.0</version>
 				<executions>
 					<execution>
 						<id>execution</id>
@@ -164,8 +150,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
-
 </project>

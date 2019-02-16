@@ -1,4 +1,4 @@
-package stepDefinitions;
+package steps;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,12 +18,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.asserts.SoftAssert;
 
+import cucumber.api.Scenario;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import pageObject.MapsynqHome;
-import reusableMethods.ActionMethods;
-import utils.Setup;
+import pageobjects.MapsynqHome;
+import reusablemethods.ActionMethods;
+import utils.SetUp;
 
 /**
  * This Class is used for defining steps related to validations of mapsynq home
@@ -34,24 +35,25 @@ import utils.Setup;
  */
 public class MapsynqHomeSteps {
 
-	static Logger Log = Logger.getLogger(MapsynqHomeSteps.class);
-	WebDriver driver = Setup.driver;
-	Properties prop = Setup.properties;
+	static final Logger LOG = Logger.getLogger(MapsynqHomeSteps.class);
+	WebDriver driver = SetUp.driver;
+	Properties prop = SetUp.properties;
 	ActionMethods action = new ActionMethods();
-	Actions actions = Setup.action;
-	MapsynqHome homePage = Setup.homePage;
-
+	Actions actions = SetUp.action;
+	MapsynqHome homePage = SetUp.homePage;
+	Scenario scenario = SetUp.scenario;
+	
 	@Given("^open the mapsync page with given URL$")
 	public void open_the_mapsync_page_with_given_URL() throws Throwable {
 		try {
 			String url = prop.getProperty("URL"); // Opening the application URL in opened browser
-			Log.info("URL: " + url);
+			LOG.info("URL: " + url);
 			driver.get(url);
 			action.waitForPageLoad(driver);
 			System.out.println("Browser is launched with mapsynq URL");
-			Log.info("Browser is launched with mapsynq URL");
+			LOG.info("Browser is launched with mapsynq URL");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -60,10 +62,11 @@ public class MapsynqHomeSteps {
 	public void verify_mapsync_page_is_loaded_properly() throws Throwable {
 		try {
 			action.sync(driver, homePage.mapsynqLogo); // Waiting for Logo to be visible on the page
-			Log.info("mapsynq page is loaded properly");
+			LOG.info("mapsynq page is loaded properly");
 		} catch (Exception e) {
-			Log.error("mapsynq page is not loaded properly");
-			Log.error(e);
+			LOG.error("mapsynq page is not loaded properly");
+			scenario.write("mapsynq page is not loaded properly");
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -75,10 +78,11 @@ public class MapsynqHomeSteps {
 			action.syncClickable(driver, homePage.galactioAd);
 			//waiting for popup to come into view
 			action.waitForDesiredValueOfAttribute(driver, homePage.galactioAd, "style", "right: 0px;");
-			Log.info("Galactico Ad popup is displayed");
+			LOG.info("Galactico Ad popup is displayed");
 		} catch (Exception e) {
-			Log.error("Galactico Ad popup is not displayed");
-			Log.error(e);
+			LOG.error("Galactico Ad popup is not displayed");
+			scenario.write("Galactico Ad popup is not displayed");
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -90,12 +94,12 @@ public class MapsynqHomeSteps {
 			String btnClass = homePage.galactioAdToggleBTN.getAttribute("class");
 			if (btnClass.contains("collapse")) {
 				homePage.galactioAdToggleBTN.click();
-				Log.info("Clicked on collapse button to collapse Galactio ad banner");
+				LOG.info("Clicked on collapse button to collapse Galactio ad banner");
 			} else {
-				Log.info("Galactio ad banner is already collapsed");
+				LOG.info("Galactio ad banner is already collapsed");
 			}
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -106,11 +110,12 @@ public class MapsynqHomeSteps {
 			action.sync(driver, homePage.getLeftTabByName(driver, defaultTabName));
 			String tabClass = homePage.getLeftTabByName(driver, defaultTabName).getAttribute("class");
 			Assert.assertTrue("Page do not defaults to " + defaultTabName + " tab", tabClass.contains("live_tab"));
-			Log.info("Page defaults to " + defaultTabName + " tab\"");
+			LOG.info("Page defaults to " + defaultTabName + " tab\"");
 		} catch (AssertionError ae) {
+			LOG.error(ae);
 			throw new Throwable("Page do not defaults to " + defaultTabName + " tab");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -120,7 +125,7 @@ public class MapsynqHomeSteps {
 			throws Throwable {
 		try {
 			List<String> actualList = action.convertWebElementListToStringList(homePage.topRightLinks);
-			Log.info("Actual links: " + actualList);
+			LOG.info("Actual links: " + actualList);
 			/*
 			 * Here I am using SoftAssert because it will check all the links and do not
 			 * stops the execution if any link is not present It will show the error (if
@@ -131,13 +136,14 @@ public class MapsynqHomeSteps {
 				boolean present = actualList.contains(link);
 				sf.assertTrue(present, link + " link is not present in the top right corner of the page");
 				if (present) {
-					Log.info(link + " link is present in the top right corner of the page");
+					LOG.info(link + " link is present in the top right corner of the page");
 				}
 			}
 			sf.assertAll();
-			Log.info("All links are present");
+			LOG.info("All links are present");
 		} catch (Exception e) {
-			Log.error("All/Some links are not present");
+			LOG.error("All/Some links are not present");
+			scenario.write("All/Some links are not present");
 			throw e;
 		}
 	}
@@ -155,13 +161,14 @@ public class MapsynqHomeSteps {
 				boolean present = homePage.getLeftTabByName(driver, tabName).isDisplayed();
 				sf.assertTrue(present, tabName + " tab is not present in the top right corner of the page");
 				if (present) {
-					Log.info(tabName + " tab is present in the top right corner of the page");
+					LOG.info(tabName + " tab is present in the top right corner of the page");
 				}
 			}
 			sf.assertAll();
-			Log.info("All tabs are present");
+			LOG.info("All tabs are present");
 		} catch (Exception e) {
-			Log.error("All/Some tabs are not present");
+			LOG.error("All/Some tabs are not present");
+			scenario.write("All/Some tabs are not present");
 			throw e;
 		}
 	}
@@ -171,10 +178,10 @@ public class MapsynqHomeSteps {
 		try {
 			action.syncClickable(driver, homePage.getLeftTabByName(driver, tabName));
 			actions.moveToElement(homePage.getLeftTabByName(driver, tabName)).click().build().perform();
-			Log.info("Clicked on " + tabName + " tab");
+			LOG.info("Clicked on " + tabName + " tab");
 		} catch (Exception e) {
-			Log.error("Unable to click on " + tabName + " tab");
-			Log.error(e);
+			LOG.error("Unable to click on " + tabName + " tab");
+			scenario.write("Unable to click on " + tabName + " tab");
 			throw e;
 		}
 	}
@@ -192,13 +199,14 @@ public class MapsynqHomeSteps {
 				boolean present = homePage.getLeftTabsSubTabsByName(driver, subTabName).isDisplayed();
 				sf.assertTrue(present, subTabName + " sub-tab is not present");
 				if (present) {
-					Log.info(subTabName + " sub-tab is present");
+					LOG.info(subTabName + " sub-tab is present");
 				}
 			}
 			sf.assertAll();
-			Log.info("All sub-tabs are present");
+			LOG.info("All sub-tabs are present");
 		} catch (Exception e) {
-			Log.error("All/Some sub-tabs are not present");
+			LOG.error("All/Some sub-tabs are not present");
+			scenario.write("All/Some sub-tabs are not present");
 			throw e;
 		}
 	}
@@ -208,10 +216,10 @@ public class MapsynqHomeSteps {
 		try {
 			action.syncClickable(driver, homePage.getLeftTabsSubTabsByName(driver, subTabName));
 			homePage.getLeftTabsSubTabsByName(driver, subTabName).click();
-			Log.info("Clicked on " + subTabName + " sub-tab");
+			LOG.info("Clicked on " + subTabName + " sub-tab");
 		} catch (Exception e) {
-			Log.error("Unable to click on " + subTabName + " sub-tab");
-			Log.error(e);
+			LOG.error("Unable to click on " + subTabName + " sub-tab");
+			scenario.write("Unable to click on " + subTabName + " sub-tab");
 			throw e;
 		}
 	}
@@ -221,12 +229,12 @@ public class MapsynqHomeSteps {
 		try {
 			List<WebElement> incidentList = homePage.incidentsListIncidentsSubTabLiveTab;
 			Assert.assertTrue("Incident list is not displayed", incidentList.size() > 0);
-			Log.info("Incident list is displayed");
+			LOG.info("Incident list is displayed");
 		} catch (AssertionError ae) {
-			Log.error("Incident list is not displayed");
+			LOG.error("Incident list is not displayed");
 			throw new Throwable("Incident list is not displayed");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -236,12 +244,12 @@ public class MapsynqHomeSteps {
 		try {
 			Assert.assertTrue(tbPlaceholder + " textbox is not present",
 					homePage.getTextboxWithPlaceholderText(driver, tbPlaceholder).isDisplayed());
-			Log.info(tbPlaceholder + " textbox is present");
+			LOG.info(tbPlaceholder + " textbox is present");
 		} catch (AssertionError ae) {
-			Log.error(tbPlaceholder + " textbox is not present");
+			LOG.error(tbPlaceholder + " textbox is not present");
 			throw new Throwable(tbPlaceholder + " textbox is not present");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -251,12 +259,12 @@ public class MapsynqHomeSteps {
 		try {
 			Assert.assertTrue(dropdownName + " dropdown is not present",
 					homePage.getDropdownWithName(driver, dropdownName).isDisplayed());
-			Log.info(dropdownName + " dropdown is present");
+			LOG.info(dropdownName + " dropdown is present");
 		} catch (AssertionError ae) {
-			Log.error(dropdownName + " dropdown is not present");
+			LOG.error(dropdownName + " dropdown is not present");
 			throw new Throwable(dropdownName + " dropdown is not present");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -266,10 +274,11 @@ public class MapsynqHomeSteps {
 		try {
 			action.syncClickable(driver, homePage.getDropdownWithName(driver, dropdownName));
 			homePage.getDropdownWithName(driver, dropdownName).click();
-			Log.info("Clicked on " + dropdownName + " dropdown");
+			LOG.info("Clicked on " + dropdownName + " dropdown");
 		} catch (Exception e) {
-			Log.error("Unable to click on " + dropdownName + " dropdown");
-			Log.error(e);
+			LOG.error("Unable to click on " + dropdownName + " dropdown");
+			scenario.write("Unable to click on " + dropdownName + " dropdown");
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -281,7 +290,7 @@ public class MapsynqHomeSteps {
 			WebElement dropdownElement = homePage.getDropdownWithName(driver, dropdownName);
 			List<WebElement> dropdownOptionsEl = action.getOptionsFromDropdown(driver, dropdownElement);
 			List<String> actualDates = action.convertWebElementListToStringList(dropdownOptionsEl);
-			Log.info("Actual dates: " + actualDates);
+			LOG.info("Actual dates: " + actualDates);
 			// Logic for getting past dates and adding it to a list
 			List<String> expectedDates = new ArrayList<String>();
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -290,15 +299,15 @@ public class MapsynqHomeSteps {
 				cal.add(Calendar.DATE, -1);
 				expectedDates.add(df.format(cal.getTime()));
 			}
-			Log.info("Expected dates: " + expectedDates);
+			LOG.info("Expected dates: " + expectedDates);
 			Assert.assertTrue("Past " + numberOfPastDates + " dates are not present in the dropdown",
 					actualDates.containsAll(expectedDates));
-			Log.info("Past " + numberOfPastDates + " dates are present in the dropdown");
+			LOG.info("Past " + numberOfPastDates + " dates are present in the dropdown");
 		} catch (AssertionError ae) {
-			Log.error("Past " + numberOfPastDates + " dates are not present in the dropdown");
-			throw ae;
+			LOG.error("Past " + numberOfPastDates + " dates are not present in the dropdown");
+			throw new Throwable("Past " + numberOfPastDates + " dates are not present in the dropdown");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -308,7 +317,7 @@ public class MapsynqHomeSteps {
 		try {
 			List<WebElement> incidentList = homePage.incidentsListIncidentsSubTabLiveTab;
 			List<String> incidentDescriptionList = action.convertWebElementListToStringList(incidentList);
-			Log.info("Actual Incident List: " + incidentDescriptionList);
+			LOG.info("Actual Incident List: " + incidentDescriptionList);
 			// Taking random incident from list
 			int i = (int) (Math.random() * incidentDescriptionList.size());
 			/*
@@ -316,9 +325,9 @@ public class MapsynqHomeSteps {
 			 * description
 			 */
 			String searchString = incidentDescriptionList.get(i).trim().split("\\r?\\n")[1];
-			Log.info("Searching for incident: " + searchString);
+			LOG.info("Searching for incident: " + searchString);
 			homePage.getTextboxWithPlaceholderText(driver, "Search incident location").sendKeys(searchString);
-			Log.info("Searched string is typed in search textbox on Incident sub-tab");
+			LOG.info("Searched string is typed in search textbox on Incident sub-tab");
 			action.waitForPageLoad(driver);
 			// Taking Incident list after searching
 			List<WebElement> resultList = new ArrayList<WebElement>();
@@ -338,14 +347,14 @@ public class MapsynqHomeSteps {
 			 * description
 			 */
 			String actualResultText = resultDescriptionList.get(0).split("\\r?\\n")[1];
-			Log.info(actualResultText);
+			LOG.info(actualResultText);
 			Assert.assertTrue(actualResultText.equalsIgnoreCase(searchString));
-			Log.info("Search functionality is working properly on Incident sub-tab");
+			LOG.info("Search functionality is working properly on Incident sub-tab");
 		} catch (AssertionError ae) {
-			Log.error("Search functionality is not working properly on Incident sub-tab");
-			throw ae;
+			LOG.error("Search functionality is not working properly on Incident sub-tab");
+			throw new Throwable("Search functionality is not working properly on Incident sub-tab");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -355,12 +364,12 @@ public class MapsynqHomeSteps {
 		try {
 			List<WebElement> camerasList = homePage.cameraListCameraSubTabLiveTab;
 			Assert.assertTrue("Camera list is not displayed", camerasList.size() > 0);
-			Log.info("Camera list is displayed");
+			LOG.info("Camera list is displayed");
 		} catch (AssertionError ae) {
-			Log.error("Camera list is not displayed");
+			LOG.error("Camera list is not displayed");
 			throw new Throwable("Camera list is not displayed");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -373,9 +382,9 @@ public class MapsynqHomeSteps {
 			// Taking random camera from list
 			int i = (int) (Math.random() * cameraDescriptionList.size());
 			String searchString = cameraDescriptionList.get(i).trim();
-			Log.info("Searching for incident: " + searchString);
+			LOG.info("Searching for incident: " + searchString);
 			homePage.getTextboxWithPlaceholderText(driver, "Search camera location").sendKeys(searchString);
-			Log.info("Searched string is typed in search textbox on Cameras sub-tab");
+			LOG.info("Searched string is typed in search textbox on Cameras sub-tab");
 			action.waitForPageLoad(driver);
 			// Taking Cameras list after searching
 			List<WebElement> resultList = new ArrayList<WebElement>();
@@ -390,14 +399,14 @@ public class MapsynqHomeSteps {
 			} while (resultList.size() > 2);
 			List<String> resultDescriptionList = action.convertWebElementListToStringList(cameraList);
 			String actualResultText = resultDescriptionList.get(0);
-			Log.info(actualResultText);
+			LOG.info(actualResultText);
 			Assert.assertTrue(actualResultText.equalsIgnoreCase(searchString));
-			Log.info("Search functionality is working properly on Cameras sub-tab");
+			LOG.info("Search functionality is working properly on Cameras sub-tab");
 		} catch (AssertionError ae) {
-			Log.error("Search functionality is not working properly on Cameras sub-tab");
-			throw ae;
+			LOG.error("Search functionality is not working properly on Cameras sub-tab");
+			throw new Throwable("Search functionality is not working properly on Cameras sub-tab");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -407,12 +416,12 @@ public class MapsynqHomeSteps {
 		try {
 			List<WebElement> tollsList = homePage.tollListTollSubTabLiveTab;
 			Assert.assertTrue("Tolls list is not displayed", tollsList.size() > 0);
-			Log.info("Tolls list is displayed");
+			LOG.info("Tolls list is displayed");
 		} catch (AssertionError ae) {
-			Log.error("Tolls list is not displayed");
+			LOG.error("Tolls list is not displayed");
 			throw new Throwable("Tolls list is not displayed");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 
@@ -423,16 +432,16 @@ public class MapsynqHomeSteps {
 		try {
 			List<WebElement> tollList = homePage.tollListTollSubTabLiveTab;
 			List<String> tollDescriptionList = action.convertWebElementListToStringList(tollList);
-			Log.info("Actual toll lsit: " + tollDescriptionList);
+			LOG.info("Actual toll lsit: " + tollDescriptionList);
 			// Taking random Toll from list
 			int i = (int) (Math.random() * tollDescriptionList.size());
 			String searchString = tollDescriptionList.get(i).trim();
-			Log.info("Searching for incident: " + searchString);
+			LOG.info("Searching for incident: " + searchString);
 			homePage.getTextboxWithPlaceholderText(driver, "Search gantry location").click();
 			homePage.getTextboxWithPlaceholderText(driver, "Search gantry location").sendKeys(searchString);
-			Log.info("Searched string is typed in search textbox on Tolls sub-tab");
+			LOG.info("Searched string is typed in search textbox on Tolls sub-tab");
 			action.waitForPageLoad(driver);
-			// Taking Cameras list after searching
+			// Taking Toll list after searching
 			List<WebElement> resultList = new ArrayList<WebElement>();
 			int counter = 0;
 			do {
@@ -445,14 +454,14 @@ public class MapsynqHomeSteps {
 			} while (resultList.size() > 2);
 			List<String> resultDescriptionList = action.convertWebElementListToStringList(tollList);
 			String actualResultText = resultDescriptionList.get(0);
-			Log.info(actualResultText);
+			LOG.info(actualResultText);
 			Assert.assertTrue(actualResultText.equalsIgnoreCase(searchString));
-			Log.info("Search functionality is working properly on Tolls sub-tab");
+			LOG.info("Search functionality is working properly on Tolls sub-tab");
 		} catch (AssertionError ae) {
-			Log.error("Search functionality is not working properly on Tolls sub-tab");
-			throw ae;
+			LOG.error("Search functionality is not working properly on Tolls sub-tab");
+			throw new Throwable("Search functionality is not working properly on Tolls sub-tab");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -460,21 +469,24 @@ public class MapsynqHomeSteps {
 	@Then("^verify following buttons are present$")
 	public void verify_following_buttons_are_present(List<String> expectedButtonNames) throws Throwable {
 		try {
-			// Here I am using SoftAssert because it will check all the buttons and do not
-			// stops the execution if any buttons is not present
-			// It will show the error (if any) only after checking all the conditions
+			/*
+			 * Here I am using SoftAssert because it will check all the buttons and do not
+			 * stops the execution if any buttons is not present It will show the error (if
+			 * any) only after checking all the conditions
+			 */
 			SoftAssert sf = new SoftAssert();
 			for (String buttonName : expectedButtonNames) {
 				boolean present = homePage.getButtonByName(driver, buttonName).isDisplayed();
 				sf.assertTrue(present, buttonName + " buttons is not present");
 				if (present) {
-					Log.info(buttonName + " buttons is present");
+					LOG.info(buttonName + " buttons is present");
 				}
 			}
 			sf.assertAll();
-			Log.info("All buttons are present");
+			LOG.info("All buttons are present");
 		} catch (Exception e) {
-			Log.error("All/Some buttons are not present");
+			LOG.error("All/Some buttons are not present");
+			scenario.write("All/Some buttons are not present");
 			throw e;
 		}
 	}
@@ -483,19 +495,21 @@ public class MapsynqHomeSteps {
 	public void verify_To_Origin_and_From_Destination_textboxes_are_present() throws Throwable {
 		try {
 			action.sync(driver, homePage.fromDirectionTB);
-			Log.info("Origin textbox is present");
+			LOG.info("Origin textbox is present");
 		} catch (Exception e) {
-			Log.error("Origin textbox is not present");
-			Log.error(e);
+			LOG.error("Origin textbox is not present");
+			scenario.write("Origin textbox is not present");
+			LOG.error(e);
 			throw e;
 		}
 
 		try {
 			action.sync(driver, homePage.toDirectionTB);
-			Log.info("Destination textbox is present");
+			LOG.info("Destination textbox is present");
 		} catch (Exception e) {
-			Log.error("Destination textbox is not present");
-			Log.error(e);
+			LOG.error("Destination textbox is not present");
+			scenario.write("Destination textbox is not present");
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -503,22 +517,25 @@ public class MapsynqHomeSteps {
 	@Then("^verify following checkboxes are present$")
 	public void verify_following_checkboxes_are_present(List<String> expectedCheckboxes) throws Throwable {
 		try {
-			// Here I am using SoftAssert because it will check all the checkboxes and do
-			// not
-			// stops the execution if any checkboxes is not present
-			// It will show the error (if any) only after checking all the conditions
+			/*
+			 * Here I am using SoftAssert because it will check all the checkboxes and donot
+			 * stops the execution if any checkboxes is not present.
+			 * It will show the error (if any) only 
+			 * after checking all the conditions
+			 */
 			SoftAssert sf = new SoftAssert();
 			for (String checkboxName : expectedCheckboxes) {
 				boolean present = homePage.getCheckboxByName(driver, checkboxName).isDisplayed();
 				sf.assertTrue(present, checkboxName + " checkboxes is not present");
 				if (present) {
-					Log.info(checkboxName + " checkboxes is present");
+					LOG.info(checkboxName + " checkboxes is present");
 				}
 			}
 			sf.assertAll();
-			Log.info("All checkboxes are present");
+			LOG.info("All checkboxes are present");
 		} catch (Exception e) {
-			Log.error("All/Some checkboxes are not present");
+			LOG.error("All/Some checkboxes are not present");
+			scenario.write("All/Some checkboxes are not present");
 			throw e;
 		}
 	}
@@ -527,10 +544,11 @@ public class MapsynqHomeSteps {
 	public void verify_swap_origin_destination_button_is_present() throws Throwable {
 		try {
 			action.sync(driver, homePage.swapOriginDestinationBTN);
-			Log.info("Swap origin/destination button is present");
+			LOG.info("Swap origin/destination button is present");
 		} catch (Exception e) {
-			Log.error("Swap origin/destination button is not present");
-			Log.error(e);
+			LOG.error("Swap origin/destination button is not present");
+			scenario.write("Swap origin/destination button is not present");
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -540,10 +558,11 @@ public class MapsynqHomeSteps {
 		try {
 			action.sync(driver, homePage.toDirectionTB);
 			homePage.toDirectionTB.sendKeys(text);
-			Log.info(text + " is typed in Destination textbox");
+			LOG.info(text + " is typed in Destination textbox");
 		} catch (Exception e) {
-			Log.error("Destination textbox is not present");
-			Log.error(e);
+			LOG.error("Destination textbox is not present");
+			scenario.write("Destination textbox is not present");
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -552,10 +571,11 @@ public class MapsynqHomeSteps {
 	public void verify_search_auto_complete_suggestions_are_displayed() throws Throwable {
 		try {
 			action.sync(driver, homePage.autocompleteSuggestions);
-			Log.info("Auto-complete suggestions are displayed");
+			LOG.info("Auto-complete suggestions are displayed");
 		} catch (Exception e) {
-			Log.error("Auto-complete suggestion is not displayed");
-			Log.error(e);
+			LOG.error("Auto-complete suggestion is not displayed");
+			scenario.write("Auto-complete suggestion is not displayed");
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -567,10 +587,11 @@ public class MapsynqHomeSteps {
 			// Taking all suggestions in auto-complete into a list
 			List<WebElement> suggestionnElemens = homePage.autocompleteSuggestions.findElements(By.xpath("./div"));
 			suggestionnElemens.get(0).click();
-			Log.info("One suggestion is selected");
+			LOG.info("One suggestion is selected");
 		} catch (Exception e) {
-			Log.error("Error in selecting option");
-			Log.error(e);
+			LOG.error("Error in selecting option");
+			scenario.write("Error in selecting option");
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -580,14 +601,14 @@ public class MapsynqHomeSteps {
 		try {
 			action.sync(driver, homePage.toDirectionTB);
 			String destinationTBValue = homePage.toDirectionTB.getAttribute("value");
-			Log.info("Actual value of Destination textbox: " + destinationTBValue);
+			LOG.info("Actual value of Destination textbox: " + destinationTBValue);
 			Assert.assertFalse(destinationTBValue.equalsIgnoreCase("") || destinationTBValue == null);
-			Log.info("Destination textbox is filled");
+			LOG.info("Destination textbox is filled");
 		} catch (AssertionError ae) {
-			Log.error("Destination textbox is not filled");
-			throw ae;
+			LOG.error("Destination textbox is not filled");
+			throw new Throwable("Destination textbox is not filled");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -599,8 +620,8 @@ public class MapsynqHomeSteps {
 			action.sync(driver, homePage.toDirectionTB);
 			String originalSource = homePage.fromDirectionTB.getAttribute("value");
 			String originalDestination = homePage.toDirectionTB.getAttribute("value");
-			Log.info("Original Source: " + originalSource);
-			Log.info("Original Destination: " + originalDestination);
+			LOG.info("Original Source: " + originalSource);
+			LOG.info("Original Destination: " + originalDestination);
 			homePage.swapOriginDestinationBTN.click();
 			/*
 			 * If alert appears after clicking on swap button then it will switch to alert
@@ -615,24 +636,24 @@ public class MapsynqHomeSteps {
 				 * Do Nothing in this case Continue with execution without giving any error
 				 */
 			}
-			Log.info("Clicked on Swap Origin/Destination button");
+			LOG.info("Clicked on Swap Origin/Destination button");
 			action.waitForPageLoad(driver);
 			String newSource = homePage.fromDirectionTB.getAttribute("value");
 			String newDestination = homePage.toDirectionTB.getAttribute("value");
-			Log.info("New Source: " + originalSource);
-			Log.info("New Destination: " + originalDestination);
+			LOG.info("New Source: " + originalSource);
+			LOG.info("New Destination: " + originalDestination);
 			/*
 			 * Checking whether new destination is previous source and new source is
 			 * previous destination
 			 */
 			Assert.assertTrue("Origin/Destion is not swapped after clicking on Swap origin/destination button",
 					newSource.equalsIgnoreCase(originalDestination) && newDestination.equalsIgnoreCase(originalSource));
-			Log.info("Origin/Destion is swapped after clicking on Swap origin/destination button");
+			LOG.info("Origin/Destion is swapped after clicking on Swap origin/destination button");
 		} catch (AssertionError ae) {
-			Log.error("Origin/Destion is not swapped after clicking on Swap origin/destination button");
-			throw ae;
+			LOG.error("Origin/Destion is not swapped after clicking on Swap origin/destination button");
+			throw new Throwable("Origin/Destion is not swapped after clicking on Swap origin/destination button");
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -643,12 +664,12 @@ public class MapsynqHomeSteps {
 			action.sync(driver, homePage.getButtonByName(driver, buttonName));
 			action.syncClickable(driver, homePage.getButtonByName(driver, buttonName));
 			homePage.getButtonByName(driver, buttonName).click();
-			Log.info("Clicked on " + buttonName + " button");
+			LOG.info("Clicked on " + buttonName + " button");
 		} catch (UnhandledAlertException uh) {
 			// Do nothing and continue the execution
 			// This Alert will be handled separately
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}
@@ -662,15 +683,15 @@ public class MapsynqHomeSteps {
 			alertText = alert.getText();
 			alert.accept();
 			Assert.assertTrue("Alert text didn't match", alertText.equalsIgnoreCase(expectedAlertText));
-			Log.info("Alert text match successfully");
+			LOG.info("Alert text match successfully");
 		} catch (NoAlertPresentException na) {
-			Log.error("Alert is not present");
-			throw na;
+			LOG.error("Alert is not present");
+			throw new Throwable("Alert is not present");
 		} catch (AssertionError ae) {
-			Log.error("Actual alert text: " + alertText + " didn't match expected Alert text: " + expectedAlertText);
-			throw ae;
+			LOG.error("Actual alert text: " + alertText + " didn't match expected Alert text: " + expectedAlertText);
+			throw new Throwable("Actual alert text: " + alertText + " didn't match expected Alert text: " + expectedAlertText);
 		} catch (Exception e) {
-			Log.error(e);
+			LOG.error(e);
 			throw e;
 		}
 	}

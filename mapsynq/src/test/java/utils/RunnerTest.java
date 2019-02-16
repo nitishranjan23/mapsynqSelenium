@@ -1,16 +1,23 @@
 package utils;
 
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
-
 import org.junit.runner.RunWith;
 
+import cucumber.api.CucumberOptions;
+import cucumber.api.SnippetType;
+import cucumber.api.junit.Cucumber;
+
+/**
+ * Runner class
+ * 
+ * @author Nitish
+ * */
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = {"src/test/resources"}, 
-					glue = "src/test/java/stepDefinitions",
+@CucumberOptions(features = {"src/test/resources/GoogleMapRelatedFunctionality.feature"}, 
+					glue = {"src/test/java/steps"},
 					plugin = { "pretty", "json:target/cucumber.json", "html:target/cucumber-html-reports"}
+					,snippets = SnippetType.UNDERSCORE, dryRun = false, monochrome = true
 					//,tags = { "~@ignore" }
 					)
 public class RunnerTest {

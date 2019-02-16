@@ -43,6 +43,8 @@
 		<!-- <priority value ="debug"></priority> -->
 		<level value="INFO" />
 		<appender-ref ref="CONSOLE"></appender-ref>
+		<!-- For generating HTML log file -->
+		<appender-ref ref="HTML"></appender-ref>
 		<appender-ref ref="R"></appender-ref>
 	</root>
 
