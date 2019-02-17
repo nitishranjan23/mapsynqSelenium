@@ -43,6 +43,7 @@ public class SetUp {
 	static {
 		DOMConfigurator.configure("log4j.xml"); // Configure logger from log4j.xml file
 	}
+	
 	public static WebDriver driver;
 	public static MapsynqHome homePage;
 	public static GoogleMap googleMapPage;
@@ -107,7 +108,6 @@ public class SetUp {
 
 			case "chrome":
 				LOG.info("Testing Browser: Chrome");
-				scenario.write("Testing Browser: Chrome");
 				WebDriverManager.chromedriver().setup();
 				driver = new ChromeDriver();
 				break;
