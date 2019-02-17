@@ -243,7 +243,10 @@ public class ActionMethods {
 	 *         after removing "px" or "%" and removing digits after decimal
 	 */
 	public int getIntegerValueOfCSS(String stringCSSValue) {
-		int integerVal = Integer.parseInt(stringCSSValue.replace("%", "").replace("px", "").split(".")[0]);
+		if (stringCSSValue.contains(".")) {
+			stringCSSValue = stringCSSValue.replace(".","");
+		}
+		int integerVal = Integer.parseInt(stringCSSValue.replace("%", "").replace("px", ""));
 		return integerVal;
 	}
 

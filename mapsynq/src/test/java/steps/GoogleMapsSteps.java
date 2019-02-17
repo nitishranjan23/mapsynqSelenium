@@ -329,6 +329,7 @@ public class GoogleMapsSteps {
 			 * description
 			 */
 			incidentDescToClick = incidentDescriptionList.get(i).trim().split("\\r?\\n")[1];
+			action.syncClickable(driver, incidentList.get(i));
 			incidentList.get(i).click();
 			LOG.info("Click on incident: " + incidentDescToClick);
 
@@ -403,7 +404,8 @@ public class GoogleMapsSteps {
 			 * Splitting Camera data (time and description) by new line and taking only
 			 * description
 			 */
-			cameraDescToClick = cameraDescriptionList.get(i).trim();// .split("\\r?\\n")[1];
+			cameraDescToClick = cameraDescriptionList.get(i).trim();
+			action.syncClickable(driver, cameraList.get(i));
 			cameraList.get(i).click();
 			LOG.info("Click on camera: " + cameraDescToClick);
 
@@ -439,9 +441,10 @@ public class GoogleMapsSteps {
 			 * Splitting Toll data (time and description) by new line and taking only
 			 * description
 			 */
-			tollDescToClick = tollDescriptionList.get(i).trim();// .split("\\r?\\n")[1];
-			// since above normal click is not working in every case so using javascript
+			tollDescToClick = tollDescriptionList.get(i).trim();
+			// since normal click is not working in every case so using javascript
 			// click
+			action.syncClickable(driver, tollList.get(i));
 			action.javascriptClick(driver, tollList.get(i));
 			LOG.info("Click on Toll: " + tollDescToClick);
 

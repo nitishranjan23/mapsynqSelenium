@@ -32,6 +32,58 @@ public class MapsynqHome {
 	@FindBy(how = How.ID, using = "ad_toggle")
 	public WebElement galactioAdToggleBTN; //Button to expand or collapse Galactico Ad banner
 	
+	@FindBy(how = How.CSS, using = "input[id $= 'GlobalSearch']")
+	public WebElement searchTB; //Search textbox besides mapsynq logo
+	
+	@FindBy(how = How.CSS, using = "ul[class *='autocomplete']")
+	public WebElement globalSearchSuggestion;
+			
+	@FindBy(how = How.CSS, using = "ul[class *='autocomplete'] li[class *='menu'] p:not(.subtext)")
+	public List<WebElement> globalSearchSuggestionList;
+	
+	@FindBy(how = How.CSS, using = "div#search_result div.placeResult")
+	public WebElement globalSearchResultContainer;
+	
+	/**
+	 * This method is for getting search results from above search result container (div)
+	 * 
+	 * @author Nitish
+	 * @param globalSearchResultContainer {@link WebElement} of search result container
+	 * @return All search result inside the container
+	 * 
+	 * */
+	public List<WebElement> getGlobalSearchResultInsideContainer(WebElement globalSearchResultContainer){
+		return globalSearchResultContainer.findElements(By.cssSelector(" p.place_searchresult"));
+	}
+	
+	@FindBy(how = How.XPATH, using = "//p[contains(@class, 'searchresult')]/parent::td/following-sibling::td//span[contains(@class, 'icon')]")
+	public List<WebElement> contextClickTriangleButtonBesideSearchResult;
+	
+	@FindBy(how = How.CSS, using = "ul.context-menu-list:not([style *='none'])")
+	public WebElement contextMenuPopup;
+	
+	/**
+	 * This method is for getting context menu options from above context menu popup
+	 * 
+	 * @author Nitish
+	 * @param contextMenuPopup {@link WebElement} of context menu popup container
+	 * @return All options inside the popup
+	 * 
+	 * */
+	public List<WebElement> getContextMenuOptionsInsidePopup(WebElement contextMenuPopup){
+		return contextMenuPopup.findElements(By.xpath(".//li"));
+	}
+	
+	/**
+	 * This method is for getting fb Share icon inside context menu popup
+	 * 
+	 * @author Nitish
+	 * @param contextMenuPopup {@link WebElement} of context menu popup container
+	 * 
+	 * */
+	public WebElement getfbShareOptionsInsidePopup(WebElement contextMenuPopup){
+		return contextMenuPopup.findElement(By.cssSelector(" li.icon-fb_share"));
+	}
 	@FindBy(how = How.CSS, using = "div.account_bar_wrapper a")
 	public List<WebElement> topRightLinks; //All links present on top right corner
 	

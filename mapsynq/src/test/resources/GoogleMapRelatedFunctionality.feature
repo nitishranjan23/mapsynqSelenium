@@ -1,7 +1,6 @@
 ###Author: Nitish
 ###Date: 11th Feb 2019
 Feature: To test Google Map related features of mapsynq home page
-  #Here I am going to validate different map related feature like display of icons and popup informations on the map
 
   Background: Page Launch
     Given open the mapsync page with given URL
@@ -34,7 +33,6 @@ Feature: To test Google Map related features of mapsynq home page
     Then verify "zoomin" and "zoomout" buttons are present on the map
     And verify zoombar is present on the map
 
-
   Scenario: Functioning of Direction buttons
     When Google map is loaded
     Then click on "up" direction button
@@ -60,11 +58,11 @@ Feature: To test Google Map related features of mapsynq home page
     And click on "Cameras" sub-tab
     Then verify camera list is displayed
     Then verify clicking on any camera displays that camera on the map
-    And verify "Cameras" pannel is active on the top of the map
+    And verify "Camera" pannel is active on the top of the map
     Then click on the close button in the popup
     And verify information popup is closed
-    
-    Scenario: Display of Tolls on Google map
+
+  Scenario: Display of Tolls on Google map
     When user clicks on "Live" tab
     And click on "Tolls" sub-tab
     Then verify Tolls list is displayed

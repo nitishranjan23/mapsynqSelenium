@@ -91,4 +91,12 @@ public class GoogleMap {
 	public WebElement getPopupByTitle(WebDriver driver, String title) {
 		return driver.findElement(By.xpath("//span[contains(@class, 'ui-dialog-title') and text() = '"+title+"']"));
 	}
+	
+	@FindBy(how =How.CSS, using = "span.popuptitle+span")
+	public WebElement popupHeader;
+	
+	public List<WebElement> getLinksInInformationPopupCorrespndingToCategory(WebDriver driver, String category){
+		return driver.findElements(By.xpath("//div[@class='popup_menu_panel']/span[text()='"+category+"']/following-sibling::span[1]//a"));
+	}
+	
 }

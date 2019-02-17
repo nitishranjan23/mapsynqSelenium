@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -41,7 +42,7 @@ public class MapsynqHomeSteps {
 	Actions actions = SetUp.action;
 	MapsynqHome homePage = SetUp.homePage;
 	Scenario scenario = SetUp.scenario;
-	
+
 	@Given("^open the mapsync page with given URL$")
 	public void open_the_mapsync_page_with_given_URL() throws Throwable {
 		try {
@@ -75,9 +76,11 @@ public class MapsynqHomeSteps {
 		try {
 			action.sync(driver, homePage.galactioAd);
 			action.syncClickable(driver, homePage.galactioAd);
-			//waiting for popup to come into view
+			// waiting for popup to come into view
 			action.waitForDesiredValueOfAttribute(driver, homePage.galactioAd, "style", "right: 0px;");
 			LOG.info("Galactico Ad popup is displayed");
+		} catch (TimeoutException to) {
+			// Popup didn't display, continue the execution
 		} catch (Exception e) {
 			LOG.error("Galactico Ad popup is not displayed");
 			scenario.write("Galactico Ad popup is not displayed");
@@ -285,13 +288,14 @@ public class MapsynqHomeSteps {
 	@Then("^verify past (\\d+) dates are present in the \"([^\"]*)\" dropdown$")
 	public void verify_past_dates_are_present_in_the_dropdown(int numberOfPastDates, String dropdownName)
 			throws Throwable {
+		List<String> expectedDates = new ArrayList<String>();
+		List<String> actualDates = new ArrayList<String>();
 		try {
 			WebElement dropdownElement = homePage.getDropdownWithName(driver, dropdownName);
 			List<WebElement> dropdownOptionsEl = action.getOptionsFromDropdown(driver, dropdownElement);
-			List<String> actualDates = action.convertWebElementListToStringList(dropdownOptionsEl);
+			actualDates = action.convertWebElementListToStringList(dropdownOptionsEl);
 			LOG.info("Actual dates: " + actualDates);
 			// Logic for getting past dates and adding it to a list
-			List<String> expectedDates = new ArrayList<String>();
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Calendar cal = Calendar.getInstance();
 			for (int i = 0; i < numberOfPastDates; i++) {
@@ -304,6 +308,7 @@ public class MapsynqHomeSteps {
 			LOG.info("Past " + numberOfPastDates + " dates are present in the dropdown");
 		} catch (AssertionError ae) {
 			LOG.error("Past " + numberOfPastDates + " dates are not present in the dropdown");
+			LOG.info("Actual dates: " + actualDates +" but expected dates was: "+expectedDates);
 			throw new Throwable("Past " + numberOfPastDates + " dates are not present in the dropdown");
 		} catch (Exception e) {
 			LOG.error(e);
@@ -518,9 +523,8 @@ public class MapsynqHomeSteps {
 		try {
 			/*
 			 * Here I am using SoftAssert because it will check all the checkboxes and donot
-			 * stops the execution if any checkboxes is not present.
-			 * It will show the error (if any) only 
-			 * after checking all the conditions
+			 * stops the execution if any checkboxes is not present. It will show the error
+			 * (if any) only after checking all the conditions
 			 */
 			SoftAssert sf = new SoftAssert();
 			for (String checkboxName : expectedCheckboxes) {
@@ -584,8 +588,8 @@ public class MapsynqHomeSteps {
 		try {
 			action.sync(driver, homePage.autocompleteSuggestions);
 			// Taking all suggestions in auto-complete into a list
-			List<WebElement> suggestionnElemens = homePage.autocompleteSuggestions.findElements(By.xpath("./div"));
-			suggestionnElemens.get(0).click();
+			List<WebElement> suggestionElemens = homePage.autocompleteSuggestions.findElements(By.xpath("./div"));
+			suggestionElemens.get(0).click();
 			LOG.info("One suggestion is selected");
 		} catch (Exception e) {
 			LOG.error("Error in selecting option");
@@ -688,7 +692,8 @@ public class MapsynqHomeSteps {
 			throw new Throwable("Alert is not present");
 		} catch (AssertionError ae) {
 			LOG.error("Actual alert text: " + alertText + " didn't match expected Alert text: " + expectedAlertText);
-			throw new Throwable("Actual alert text: " + alertText + " didn't match expected Alert text: " + expectedAlertText);
+			throw new Throwable(
+					"Actual alert text: " + alertText + " didn't match expected Alert text: " + expectedAlertText);
 		} catch (Exception e) {
 			LOG.error(e);
 			throw e;

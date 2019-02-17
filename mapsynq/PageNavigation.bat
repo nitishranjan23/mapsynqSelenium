@@ -1,1 +1,1 @@
-mvn install -Dcucumber.options="src/test/features/PageNavigation.feature"
+mvn install -Dcucumber.options="src/test/resources/PageNavigation.feature"

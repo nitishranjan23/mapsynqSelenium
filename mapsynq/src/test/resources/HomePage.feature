@@ -45,7 +45,7 @@ Feature: To test basic features of mapsynq home page
     And verify "Search incident location" textbox is present
     And verify "Date" dropdown is present
     Then click on "Date" dropdown
-    And verify past 3 dates are present in the "Date" dropdown
+    And verify past 2 dates are present in the "Date" dropdown
     Then verify the search functionality in Incident sub-tab
 
   Scenario: Cameras Sub-tab of Live

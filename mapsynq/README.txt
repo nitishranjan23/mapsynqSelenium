@@ -1,9 +1,7 @@
 Author: Nitish
 Date: 10th Feb 2019
 
-************ Instructions to Run this Selenium Project ******************
-
-Use drivers (both Chromedriver and IEDriver) compatable with your Chrome or IE version.
+************ Issue with Chrome ******************
 
 While using Chrome If chromedriver is launching the chrome with Settings page then 
 follow below steps to overcome this:

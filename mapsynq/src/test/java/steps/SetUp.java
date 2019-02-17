@@ -7,15 +7,18 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.PageFactory;
@@ -48,7 +51,9 @@ public class SetUp {
 	static PropertiesFileReader fileReader = new PropertiesFileReader();
 	public static Actions action;
 	public static Scenario scenario;
-
+	static final Logger LOG = Logger.getLogger(SetUp.class);
+	private String browser = null;
+	
 	/**
 	 * Initialization method: Here browser is selected based on data in
 	 * globalConfig.properties file. Then {@link DesiredCapabilities} of that
@@ -57,7 +62,7 @@ public class SetUp {
 	 * 
 	 * @author Nitish
 	 */
-	
+
 	@Before
 	@SuppressWarnings("deprecation")
 	public void setupTest(Scenario scenario) {
@@ -65,17 +70,19 @@ public class SetUp {
 		System.out.println("Scenario Name: " + scenario.getName());
 		properties = fileReader.loadPropertiesFile("globalConfig.properties"); // reading properties file
 
-		String browser = properties.getProperty("browser");
-		String headless = properties.getProperty("headless");
+		browser = properties.getProperty("browser").toLowerCase();
+		String headless = properties.getProperty("headless").toLowerCase();
 		// For headless execution I will be using Chrome here in headless mode
 		if (headless.equalsIgnoreCase("true")) {
+			browser = "Headless";
+			LOG.info("Performing Headless Browser Testing");
 			ChromeOptions chromeOptions = new ChromeOptions();
 			// Getting current screen resolution
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			int width = screenSize.width;
 			int height = screenSize.height;
 			System.out.println(width + "x" + height);
-			// Launching headless chrome in same size as of current screen resolution
+			// For launching headless chrome in same size as of current screen resolution
 			// chromeOptions.addArguments("window-size="+width+"x"+height);
 			chromeOptions.addArguments("window-size=1366x768");
 			chromeOptions.addArguments("--allow-insecure-localhost");
@@ -83,26 +90,53 @@ public class SetUp {
 			chromeOptions.addArguments("--headless");
 			WebDriverManager.chromedriver().setup();
 			driver = new ChromeDriver(chromeOptions);
-		} else if (browser.equalsIgnoreCase("IE")) {
-			
-			DesiredCapabilities dc = DesiredCapabilities.internetExplorer();
-			dc.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-			dc.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-			dc.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
-			dc.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
-			dc.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, false);
-			//dc.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT, true);
-			WebDriverManager.iedriver().setup();
-			driver = new InternetExplorerDriver(dc);
-		} else if (browser.equalsIgnoreCase("Chrome")) {
-			WebDriverManager.chromedriver().setup();
-			driver = new ChromeDriver();
-		} else if (browser.equalsIgnoreCase("phantomjs")) {
-			WebDriverManager.phantomjs().setup();
-			// driver = new PhantomJSDriver();
-		} else if (browser.equalsIgnoreCase("opera")) {
-			WebDriverManager.operadriver().setup();
-			driver = new OperaDriver();
+		} else {
+			switch (browser) {
+			case "ie":
+				LOG.info("Testing Browser: Internet Explorer");
+				DesiredCapabilities dc = DesiredCapabilities.internetExplorer();
+				dc.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+				dc.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+				dc.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+				dc.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+				dc.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, false);
+				dc.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT, true);
+				WebDriverManager.iedriver().setup();
+				driver = new InternetExplorerDriver(dc);
+				break;
+
+			case "chrome":
+				LOG.info("Testing Browser: Chrome");
+				scenario.write("Testing Browser: Chrome");
+				WebDriverManager.chromedriver().setup();
+				driver = new ChromeDriver();
+				break;
+
+			case "opera":
+				LOG.info("Testing Browser: Opera");
+				WebDriverManager.operadriver().setup();
+				DesiredCapabilities capabilities = new DesiredCapabilities();
+				OperaOptions options = new OperaOptions();
+				/**
+				 * Due to some technical limitations with Opera, It is required to provide path
+				 * of opera executables.
+				 * System.getProperty("user.home") gives path up to C:/users/<user name>
+				 */
+				options.setBinary(System.getProperty("user.home")
+						+ "\\AppData\\Local\\Programs\\Opera\\58.0.3135.65_0\\opera.exe");
+				capabilities.setCapability(OperaOptions.CAPABILITY, options);
+				driver = new OperaDriver(capabilities);
+				break;
+
+			case "firefox":
+				LOG.info("Testing Browser: Firefox");
+				WebDriverManager.firefoxdriver().setup();
+				driver = new FirefoxDriver();
+				break;
+
+			default:
+				LOG.error("Unsupported browser. Please select browser from: Chrome, IE, Firefox, Opera");
+			}
 		}
 		driver.manage().window().maximize(); // Maximizing the browser window
 		homePage = PageFactory.initElements(driver, MapsynqHome.class);
@@ -126,18 +160,20 @@ public class SetUp {
 			// Taking screenshot and adding/embedding it to report
 			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
 			scenario.embed(screenshot, "image/png");
-			
+
 			// Saving screenshot of failed scenarios in screenshot/failed folder
 			File folderLocation = new File(
-					"screenshots/failed/" + System.currentTimeMillis() + "_" + scenario.getName() + ".png");
+					"screenshots/failed/" + System.currentTimeMillis() + "_" + scenario.getName() +"_"+ browser + ".png");
 			FileUtils.copyFile(screenshotFile, folderLocation);
 		} else {
 			// Saving screenshot of passed scenarios in screenshot/passed folder
 			File folderLocation = new File(
-					"screenshots/passed/" + System.currentTimeMillis() + "_" + scenario.getName() + ".png");
+					"screenshots/passed/" + System.currentTimeMillis() + "_" + scenario.getName() +"_"+ browser + ".png");
 			FileUtils.copyFile(screenshotFile, folderLocation);
 		}
+
 		driver.close();
 		driver.quit();
+
 	}
 }

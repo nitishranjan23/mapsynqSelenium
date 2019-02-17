@@ -1,1 +1,1 @@
-mvn install -Dcucumber.options="src/test/features/GoogleMapRelatedFunctionality.feature"
+mvn install -Dcucumber.options="src/test/resources/GoogleMapRelatedFunctionality.feature"

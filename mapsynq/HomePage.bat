@@ -1,1 +1,1 @@
-mvn install -Dcucumber.options="src/test/features/HomePage.feature"
+mvn install -Dcucumber.options="src/test/resources/HomePage.feature"
